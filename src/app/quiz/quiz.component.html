@@ -1,0 +1,24 @@
+
+<p>Chosen word list: {{wordListDisplayName}}</p>
+<p>Learning progress: {{learningProgress}}</p>
+<div *ngIf="quizDialogState=='intro'">
+    <p>Dialogue!!!</p>
+    <button (click)="startQuiz()">Start quiz</button>
+</div>
+<div *ngIf="!showFlashcard" class="quiz-options">
+    <p>Question: {{choiceQuiz.question.text}}</p>
+
+    <p><b>Options:</b></p>
+    <ul class="options">
+        <li *ngFor="let option of choiceQuiz.question.options" (click)="pickOption(option)">{{option}}</li>
+    </ul>
+    </div>
+<div *ngIf="showFlashcard">
+    <p><b>Expression details:</b></p>
+    <p>Lang 1: {{choiceQuiz.flashcard.lang1}} </p>
+    <p>Lang 2: {{choiceQuiz.flashcard.lang2}} </p>
+    <p>Remarks: {{choiceQuiz.flashcard.remarks}} </p>
+</div>
+<p *ngIf="showResult">Result: {{resultText}}</p>
+<button (click)="nextQuestion()">Next question</button>
+<p><button (click)="goBack()">Back to the word lists</button> Note that you will lose your progress.</p>

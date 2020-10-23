@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'vocabulary-front-end';
+  title = 'Vocabulary';
+
+  showDemo: boolean = false;
+
+  showDemoFunc() {
+    this.showDemo = true;
+  }
 }

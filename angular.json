@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "vocabulary-front-end"
+    }
+  },
+  "defaultProject": "vocabulary-front-end",
+  "cli": {
+    "analytics": "3d8e83bf-ab84-45e8-bca9-7060a0f3ed3a"
+  }
 }

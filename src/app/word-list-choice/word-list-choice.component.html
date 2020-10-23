@@ -1,0 +1,4 @@
+<b>Choose a word list from below:</b>
+<ul class="quiz-options" >
+    <li *ngFor="let word_list of word_lists" (click)="chooseList(word_list)">{{word_list.wordCollectionDisplayName}} / {{word_list.wordListDisplayName}}</li>
+</ul>
