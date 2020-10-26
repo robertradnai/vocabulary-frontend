@@ -23,8 +23,6 @@ export interface WordListAsChoice {
     wordList: string
 }
 
-
-
 export interface PickQuestionsResponse {
     quizList: ChoiceQuiz[]
 }
@@ -36,5 +34,6 @@ export interface QuizDirectives {
 export enum QuizDialogState {
     Intro,
     Question,
-    Flashcard
+    Flashcard,
+    Summary
 }

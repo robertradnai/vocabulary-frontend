@@ -17,21 +17,15 @@ export class QuizService {
 
   // Webpage access functions
   getWordLists() {
-    return this.http.get<WordListAsChoice[]>('http://127.0.0.1:5000/api/vocabulary/shared-lists')
-  }
-  getTestContent() {
-    return this.http.get('http://127.0.0.1:5000/')
-  }
-  getUnauthContent() {
-    return this.http.get('http://127.0.0.1:5000/hello')
+    return this.http.get<WordListAsChoice[]>('/api/vocabulary/shared-lists')
   }
   postRegisterGuest() {
-    return this.http.post<any>('http://127.0.0.1:5000/api/vocabulary/register-guest', null, {});
+    return this.http.post<any>('/api/vocabulary/register-guest', null, {});
   }
   postCloneWordList() {
     const params = new HttpParams()
       .set("wordCollection", this.getChosenWordList().wordCollection)
-    return this.http.post<any>('http://127.0.0.1:5000/api/vocabulary/clone-word-list', null, {params: params});
+    return this.http.post<any>('/api/vocabulary/clone-word-list', null, {params: params});
   }
 
   getPickedQuestion(wordCollection: string, wordList: string, quizStrategy: string) {
@@ -42,22 +36,18 @@ export class QuizService {
 
     const headers: HttpHeaders = new HttpHeaders()
     const options = { params: params, headers: headers };
-    return this.http.get<PickQuestionsResponse>('http://127.0.0.1:5000/api/vocabulary/pick-question', options);
+    return this.http.get<PickQuestionsResponse>('/api/vocabulary/pick-question', options);
   }
 
-  postAnswerQuestion(wordCollection: string, wordList: string, rowId: number, isCorrect: boolean) {
+  postAnswerQuestion(wordCollection: string, wordList: string, answers) {
     const params = new HttpParams()
-    .set("wordCollection", wordCollection)
-    .set("wordList", wordList)
-    .set("rowId", rowId.toString())
-    .set("isCorrect", isCorrect.toString()); 
+      .set("wordCollection", wordCollection)
+      .set("wordList", wordList); 
 
-    const headers: HttpHeaders = new HttpHeaders()
+    const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };
-    return this.http.post('http://127.0.0.1:5000/api/vocabulary/answer-question', null, options);
+    return this.http.post('/api/vocabulary/answer-question', {"answers": answers} , options);
   }
-
-
 
   //Local storage functions
   setChosenWordList(word_list: WordListAsChoice) {
@@ -72,9 +62,6 @@ export class QuizService {
   setStoredGuestJwt(guestJwt) {
     return localStorage.setItem("guestJwt", guestJwt)
   }
-
-
-
 }
 
 interface FlaskLoginAccepted {

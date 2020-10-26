@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { ChoiceQuiz, Question, QuizDialogState, WordListAsChoice } from '../models/ChoiceQuiz';
 import { QuizService } from '../quiz-service.service'
 
+const quizStrategy: string = "dummy";
+
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
@@ -10,95 +12,75 @@ import { QuizService } from '../quiz-service.service'
 })
 export class QuizComponent implements OnInit {
 
-  choiceQuiz: ChoiceQuiz;
-  choiceQuizString: string;
-
-  question: Question;
-
-  showFlashcard: boolean = true;
-  showResult: boolean =  false;
-  resultText: string = "";
-  learningProgress: string = "";
-
-  quizList: ChoiceQuiz[]
-  quizCounter: number; // It starts with 1
-  quizLength: number;
-
-  wordCollection: string = null;
-  wordList: string = null;
-  wordListDisplayName: string = null;
-
-  quizStrategy: string = "dummy"
-
-  questionIsAnswered: boolean = false;
-  quizDialogState: String = "intro";
   
+  // State-related (non-UI)
+  quizBatch: ChoiceQuiz[] = [];
+  chosenWordList: WordListAsChoice;
+  quizCounter: number = -1;
+  questionIsAnswered: boolean = false;
+  answers: Map<number, boolean>;
+
+  // UI
+  eQuizDialogState = QuizDialogState
+  quizDialogState: QuizDialogState = QuizDialogState.Intro;
+  batchProgress: string = "0/XXX"
+  resultText: string = "";
+  nextButtonLabel: string = "Next";
+  learningProgress: string = "0%";
+  summaryText: string;
 
   constructor(private quizService: QuizService, private router: Router) { }
+
 
   ngOnInit(): void {
     //this.getTestData()
 
-    this.pickQuestion()
+    this.fetchQuizesFromServer()
+
+    // Show initial info while the questions are being fetched
+
 
   }
 
-  async pickQuestion() {
+  async fetchQuizesFromServer() {
 
+    this.quizBatch = [];
     // Is a list chosen?
-    const chosenWordList: WordListAsChoice = this.quizService.getChosenWordList()
-    console.debug("Stored chosen word list: "+JSON.stringify(chosenWordList));
-    if(chosenWordList == null) {
+    this.chosenWordList = this.quizService.getChosenWordList()
+    console.debug("Stored chosen word list: "+JSON.stringify(this.chosenWordList));
+    if(this.chosenWordList == null) {
       // No list chosen
       console.debug("Word list wasn't chosen, redirecting to word list choice...");
       this.router.navigate(["/word-lists"])
 
     }else {
-      // We already have a list
-      this.wordCollection = chosenWordList.wordCollection;
-      this.wordList = chosenWordList.wordList;
-      this.wordListDisplayName = chosenWordList.wordListDisplayName;
-
-
+      // A word list has been chosen
 
       // Registering the guest user if needed
       console.debug("Stored guest jwt type in pickQuestion: "+(typeof localStorage.getItem("guestJwt")));
       console.debug("Stored guest jwt value in pickQuestion: "+(localStorage.getItem("guestJwt")));
       if (this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null") {
-        console.debug("No guest JWT is found, registering guest user...")
-        
-          console.log("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
-          const res = await this.quizService.postRegisterGuest().toPromise()
-          localStorage.setItem("guestJwt", (res as any).guestJwt);
-          console.log("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
-          await this.quizService.postCloneWordList().toPromise();
-          console.debug("Guest user was registered.")
-        
+        console.debug("No guest JWT is found, registering guest user...")   
+        console.debug("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
+        const res = await this.quizService.postRegisterGuest().toPromise()
+        localStorage.setItem("guestJwt", (res as any).guestJwt);
+        console.debug("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
+        await this.quizService.postCloneWordList().toPromise();
+        console.debug("Guest user was registered.") 
       } else {
         console.debug("The user is registered, fetching new question...")
       }
 
+      // Fetch a batch of questions
       this.quizService.getPickedQuestion(
-        chosenWordList.wordCollection, 
-        chosenWordList.wordList, 
-        "dummystrategy"
-      ).subscribe(resPickedQuestion => {
-        console.log("Got choice quiz: "+ JSON.stringify(resPickedQuestion));
+        this.chosenWordList.wordCollection, 
+        this.chosenWordList.wordList, 
+        quizStrategy
+      ).subscribe(resPickedQuestions => {
+        console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
+        this.quizBatch = resPickedQuestions.quizList;
+        this.answers = new Map()
 
-        this.quizList = resPickedQuestion.quizList;
-        ////////////////////////////
-        //this.quizList.shift();
-
-        //this.choiceQuizString = JSON.stringify(resPickedQuestion);
-        //this.question = this.choiceQuiz.question;
-        //this.showFlashcard = this.choiceQuiz.showFlashcard;
-        
-        // this.learningProgress = (this.choiceQuiz.learningProgress*100).toFixed(1).toString()+" %";
-
-        //if (this.showFlashcard) {
-        //  this.sendAnswer(true) // When a flashcard is shown, send positive answer automatically
-        //}
-        // TODO redirect to main page on error
       }, errPickedQuestion => {
         console.warn(JSON.stringify(errPickedQuestion));
         this.quizService.setStoredGuestJwt(null);
@@ -106,61 +88,110 @@ export class QuizComponent implements OnInit {
       })
  
     }
-    /*
-    this.quizService.getTestContent().subscribe(
-      content => {console.log("Got authorized content: "+ JSON.stringify(content))}
-    )
-    this.quizService.getUnauthContent().subscribe(
-      content => {console.log(")Got public content: "+ JSON.stringify(content))}
-    )*/
   }
 
-  pickOption(option: string) {
-    if (this.questionIsAnswered) {
-      console.log("Ignoring output, question has already been answered.")
-    }else {
-      console.log(option+" was chosen");
-      this.showResult = true;
-      console.log("Option: " +option);
-      console.log("this.choiceQuiz.flashcard.lang2 "+ this.choiceQuiz.flashcard.lang2)
-      if (option == this.choiceQuiz.flashcard.lang1) {
-        this.resultText = "Good answer!"
-        this.sendAnswer(true)
+  async sendAnswers() {
+    let answersJson = {}
+    this.answers.forEach((value, key) => {  
+      answersJson[key] = value  
+    });
 
-      }else {
-        this.resultText = "Incorrect answer! The correct answer is: "+ this.choiceQuiz.flashcard.lang1;
-        this.showFlashcard = true;
-        this.sendAnswer(false)
+    console.log("Sending answers: "+JSON.stringify(answersJson));
+
+    this.quizService.postAnswerQuestion(this.chosenWordList.wordCollection, this.chosenWordList.wordList, answersJson).subscribe(
+      content => {
+        console.log("Got content from answer-question: "+JSON.stringify(content))
+        this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ " %";
       }
-    }
-    
-   
-  }
-
-  sendAnswer(isCorrect: boolean) {
-    this.quizService.postAnswerQuestion(this.wordCollection, this.wordList, this.question.rowKey, isCorrect).subscribe(
-      content => {console.log("Got content from answer-question: "+JSON.stringify(content))}
+        
     );
   }
 
-  nextQuestion() {
-    // Check if there are any questions left, increment quiz counter, load new question
-    if(this.quizCounter > this.quizList.length) {
-      throw new Error("Bad state during quiz!");
-    }else if(this.quizCounter == this.quizList.length) {
-      // All questions were answered, show dialogue
-      
-    }else {
-      this.pickQuestion();
-      this.showResult = false;
-    }
-    
 
+  chooseOption(option: string) {
+    if (this.questionIsAnswered) {
+      console.log("Ignoring output, question has already been answered.")
+    }else {
+      this.questionIsAnswered = true;
+      console.log(option+" was chosen");
+      console.log("this.choiceQuiz.flashcard.lang2 "+ this.getCurrentQuizPackage().flashcard.lang2);
+
+      // Evaluating answer
+      let is_correct = option == this.getCurrentQuizPackage().flashcard.lang1;
+      this.answers.set(this.getCurrentQuizPackage().question.rowKey, is_correct);
+
+      if (is_correct) {
+        this.resultText = "Good answer!"
+      }else {
+        this.resultText = "Incorrect answer!";
+        this.quizDialogState = QuizDialogState.Flashcard;
+      }
+    }
+  }
+
+  async onNextButtonClick() {
+    
+    // Check if there are any questions left, increment quiz counter, load new question
+    this.resultText = ""; 
+    this.questionIsAnswered = false;
+    //this.learningProgress = "";
+    
+    if(this.quizCounter > this.quizBatch.length) {
+      throw new Error("Bad state during quiz!");
+    }else if(this.quizCounter + 1 == this.quizBatch.length) {
+      // All questions were answered
+      // Show summary, send answers and load new questions
+      this.quizDialogState = QuizDialogState.Summary
+      let correctAnswerCount = Array.from(this.answers.values()).filter(v => v).length;
+      let allAnswerCount = Array.from(this.answers.values()).length;
+      this.summaryText = "You answered "+correctAnswerCount+" out of the "+allAnswerCount+ " questions correctly.";
+      await this.sendAnswers()
+      this.fetchQuizesFromServer()
+      this.quizCounter = -1;
+    }else {
+      this.quizCounter += 1;
+      if (this.getCurrentQuizPackage().directives.showFlashcard) {
+        this.quizDialogState = QuizDialogState.Flashcard;
+      }else {
+        this.quizDialogState = QuizDialogState.Question;
+      }
+    }
+  }
+
+  // The next button is used for several purposes. 
+  // Depending on the state of the application, it can be enabled or disabled
+  isNextButtonDisabled(): boolean {
+    return !(
+      (this.quizDialogState == QuizDialogState.Flashcard 
+        || this.quizDialogState == QuizDialogState.Intro 
+        || this.quizDialogState == QuizDialogState.Summary 
+        || this.questionIsAnswered) 
+      && (this.quizBatch.length > 0)
+    );
+  }
+
+  getBatchProgressLabel() {
+    if(this.quizDialogState == QuizDialogState.Flashcard || this.quizDialogState == QuizDialogState.Question) {
+      return "Progress in this round: " 
+        + (this.quizCounter+1)+"/"+this.quizBatch.length 
+        + ", on the whole list: "+this.learningProgress+".";
+    }else {
+      return "";
+    }
   }
 
   goBack() {
     this.quizService.setStoredGuestJwt(null);
     this.router.navigate(['/word-lists']);
   }
+
+  getCurrentQuizPackage(): ChoiceQuiz {
+    return this.quizBatch[this.quizCounter]
+  }
+
+  isShowProgressHeader(): boolean {
+    return (this.quizDialogState == QuizDialogState.Question || this.quizDialogState == QuizDialogState.Flashcard);
+  }
+  
 
 }

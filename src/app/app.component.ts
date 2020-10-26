@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Vocabulary';
+  title = 'Vocabulary quiz demo';
 
   showDemo: boolean = false;
 
