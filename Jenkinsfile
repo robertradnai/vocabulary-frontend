@@ -5,7 +5,8 @@ pipeline {
             steps {
                 sh 'ls -la'
                 sh 'pwd'
-                sh 'ng build --prod'
+                sh 'npm install @angular/cli'
+                sh 'npm run-script ng build --prod'
             }
         }
     }
