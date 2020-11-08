@@ -76,7 +76,7 @@ export class QuizComponent implements OnInit {
         this.chosenWordList.wordCollection, 
         this.chosenWordList.wordList, 
         quizStrategy
-      ).subscribe(resPickedQuestions => {
+      ).toPromise().then(resPickedQuestions => {
         console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
         this.quizBatch = resPickedQuestions.quizList;
         this.answers = new Map()
@@ -98,12 +98,12 @@ export class QuizComponent implements OnInit {
 
     console.log("Sending answers: "+JSON.stringify(answersJson));
 
-    this.quizService.postAnswerQuestion(this.chosenWordList.wordCollection, this.chosenWordList.wordList, answersJson).subscribe(
+    await this.quizService.postAnswerQuestion(this.chosenWordList.wordCollection, this.chosenWordList.wordList, answersJson)
+      .toPromise().then(
       content => {
         console.log("Got content from answer-question: "+JSON.stringify(content))
         this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ " %";
       }
-        
     );
   }
 
@@ -146,7 +146,7 @@ export class QuizComponent implements OnInit {
       let allAnswerCount = Array.from(this.answers.values()).length;
       this.summaryText = "You answered "+correctAnswerCount+" out of the "+allAnswerCount+ " questions correctly.";
       await this.sendAnswers()
-      this.fetchQuizesFromServer()
+      await this.fetchQuizesFromServer()
       this.quizCounter = -1;
     }else {
       this.quizCounter += 1;
@@ -164,7 +164,7 @@ export class QuizComponent implements OnInit {
     return !(
       (this.quizDialogState == QuizDialogState.Flashcard 
         || this.quizDialogState == QuizDialogState.Intro 
-        || this.quizDialogState == QuizDialogState.Summary 
+        || ((this.quizDialogState == QuizDialogState.Summary) && (this.quizCounter == -1))
         || this.questionIsAnswered) 
       && (this.quizBatch.length > 0)
     );
