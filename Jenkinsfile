@@ -13,7 +13,7 @@ pipeline {
             steps {
                 sh 'mkdir -p /var/jenkins_dist/vocabulary-front/$GIT_BRANCH'
                 sh 'rm -f /var/jenkins_dist/vocabulary-front/$GIT_BRANCH/*'
-                sh 'cp dist/vocabulary-front-end/* /var/jenkins_dist/vocabulary-front/$GIT_BRANCH/'
+                sh 'cp -r dist/vocabulary-front-end/* /var/jenkins_dist/vocabulary-front/$GIT_BRANCH/'
             }
         }
     }
