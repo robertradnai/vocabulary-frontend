@@ -27,7 +27,7 @@ export class WordListChoiceComponent implements OnInit {
     // Store the chosen list
     this.quizService.setChosenWordList(word_list);
     this.quizService.setStoredGuestJwt(null);
-    this.router.navigate(['/quiz'])
+    this.router.navigate(['/quiz'], { skipLocationChange: true })
   }
 
 }
