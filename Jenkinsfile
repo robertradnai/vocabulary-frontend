@@ -6,7 +6,7 @@ pipeline {
                 sh 'ls -la'
                 sh 'pwd'
                 sh 'npm install @angular/cli'
-                sh 'npm run-script ng build --prod'
+                sh 'npm run-script \"ng build --prod --base-href /vocabulary --deploy-url /vocabulary\"'
             }
         }
         stage('Saving package') {
