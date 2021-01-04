@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChoiceQuiz, Question, QuizDialogState, WordListAsChoice } from '../models/ChoiceQuiz';
+import { ChoiceQuiz, Question, QuizDialogState, WordListAsChoice } from '../models';
 import { QuizService } from '../quiz-service.service'
 
 const quizStrategy: string = "dummy";

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WordListAsChoice } from '../models/ChoiceQuiz';
+import { WordListAsChoice } from '../models';
 import { QuizService } from '../quiz-service.service';
 
 @Component({

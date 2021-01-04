@@ -3,7 +3,7 @@ import { Content } from '@angular/compiler/src/render3/r3_ast';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ChoiceQuiz, WordListAsChoice, PickQuestionsResponse } from './models/ChoiceQuiz'
+import { ChoiceQuiz, WordListAsChoice, PickQuestionsResponse } from './models'
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class QuizService {
   constructor(private http: HttpClient, private router: Router) { }
 
   // Webpage access functions
-  getWordLists() {
+  getWordLists(): Observable<WordListAsChoice[]> {
     return this.http.get<WordListAsChoice[]>('/api/vocabulary/shared-lists')
   }
   postRegisterGuest() {
