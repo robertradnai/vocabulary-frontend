@@ -10,6 +10,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { httpInterceptorProviders } from './http-interceptors';
 import { QuizComponent } from './quiz/quiz.component';
 import { WordListChoiceComponent } from './word-list-choice/word-list-choice.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { WordListChoiceComponent } from './word-list-choice/word-list-choice.com
     LoginComponent,
     QuizComponent,
     WordListChoiceComponent,
+    FeedbackComponent,
   ],
   imports: [
     BrowserModule,
