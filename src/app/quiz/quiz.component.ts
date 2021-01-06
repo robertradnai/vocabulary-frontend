@@ -51,7 +51,7 @@ export class QuizComponent implements OnInit {
     if(this.chosenWordList == null) {
       // No list chosen
       console.debug("Word list wasn't chosen, redirecting to word list choice...");
-      this.router.navigate(["/word-lists"], { skipLocationChange: true })
+      this.router.navigate(["/word-lists"])
 
     }else {
       // A word list has been chosen
@@ -84,7 +84,7 @@ export class QuizComponent implements OnInit {
       }, errPickedQuestion => {
         console.warn(JSON.stringify(errPickedQuestion));
         this.quizService.setStoredGuestJwt(null);
-        this.router.navigate(["/word-lists"], { skipLocationChange: true });
+        this.router.navigate(["/word-lists"]);
       })
  
     }
@@ -182,7 +182,7 @@ export class QuizComponent implements OnInit {
 
   goBack() {
     this.quizService.setStoredGuestJwt(null);
-    this.router.navigate(['/word-lists'], { skipLocationChange: true });
+    this.router.navigate(['/word-lists']);
   }
 
   getCurrentQuizPackage(): ChoiceQuiz {
