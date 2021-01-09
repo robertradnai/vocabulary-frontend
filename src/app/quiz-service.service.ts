@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Content } from '@angular/compiler/src/render3/r3_ast';
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ChoiceQuiz, WordListAsChoice, PickQuestionsResponse } from './models'
@@ -47,6 +48,14 @@ export class QuizService {
     const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };
     return this.http.post('/api/vocabulary/answer-question', {"answers": answers} , options);
+  }
+
+
+  submitFeedback(formData: FormData) {
+    //const headers = new HttpHeaders({ 'enctype': 'multipart/form-data' });
+    const options = { params: null, headers: null };
+
+    return this.http.post('/api/vocabulary/feedback-or-subscribe', formData, options);
   }
 
   //Local storage functions

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { QuizService } from '../quiz-service.service'
 
 @Component({
   selector: 'app-feedback',
@@ -9,7 +10,7 @@ import { FormBuilder } from '@angular/forms';
       {{title}}
     </h1>
     <!-- https://www.kiltandcode.com/2020/01/19/using-angular-8-to-create-a-simple-form-with-formbuilder/ -->
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
+    <form *ngIf="isShowForm" [formGroup]="formGroup" (ngSubmit)="onSubmit(formGroup.value)">
       <div class="form-group">
         <label for="name">Name: </label>
         <input type="text" class="form-control" id="name" placeholder="Enter name" formControlName="name" />
@@ -39,6 +40,7 @@ import { FormBuilder } from '@angular/forms';
 
       <button class="btn btn-primary" type="submit">Submit</button>
     </form>
+    <p>{{submissionMessage}}</p>
   </div>
 
   `,
@@ -48,11 +50,15 @@ import { FormBuilder } from '@angular/forms';
 export class FeedbackComponent implements OnInit {
 
   title = 'Subscribe to newsletter or send feedback';
-  formGroup;
+  formGroup: FormGroup;
 
-  constructor(
-    private formBuilder: FormBuilder
-  ) {
+  // UI
+  submissionMessage: String = "";
+  isShowForm: boolean = true;
+
+  constructor(private formBuilder: FormBuilder,
+    private quizService: QuizService) {
+
     this.formGroup = this.formBuilder.group({
       name: '',
       email: '',
@@ -62,8 +68,27 @@ export class FeedbackComponent implements OnInit {
     });
   }
 
-  onSubmit(formData) {
-    var name = formData['name'];
+  onSubmit(formGroup: FormGroup) {
+    var formData: FormData = new FormData();
+
+    formData.append("name", formGroup["name"]);
+    formData.append("email", formGroup["email"]);
+    formData.append("subscribe", formGroup["subscribe"]);
+    formData.append("subject", formGroup["subject"]);
+    formData.append("message", formGroup["message"]);
+
+    console.log("Data received from the form: "+ JSON.stringify(formData));
+
+    this.quizService.submitFeedback(formData).subscribe(
+      res => {
+        this.submissionMessage = "Form submission was successful, thank you for your interest!"
+        this.isShowForm = false;
+      }, err => {
+        this.submissionMessage = "Form submission was not successful. "
+          + "Please check if your email address is correct and the name field is not empty. "
+          + "The backend server may also be down."
+      }
+    );
   }
 
   ngOnInit() {
