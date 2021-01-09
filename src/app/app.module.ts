@@ -11,6 +11,7 @@ import { httpInterceptorProviders } from './http-interceptors';
 import { QuizComponent } from './quiz/quiz.component';
 import { WordListChoiceComponent } from './word-list-choice/word-list-choice.component';
 import { FeedbackComponent } from './feedback/feedback.component';
+import { AboutComponent } from './about/about.component';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
     QuizComponent,
     WordListChoiceComponent,
     FeedbackComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,

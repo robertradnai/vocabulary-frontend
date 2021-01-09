@@ -1,4 +1,10 @@
-<b>Choose a word list from below:</b>
+<p>This application is being built to help you learn foreign words faster with the help of 
+    flashcards and quizes. You can already try a demo version with the word lists below, and soon,
+    you'll be able to save your progress and edit your own word lists.
+</p>
+
+<b>Choose a word list:</b>
+<p>Note that you'll lose your progress if you've already chosen a word list. You can also go to your <a href="quiz">current quiz</a>.</p>
 <ul class="quiz-options" >
     <li *ngFor="let word_list of word_lists" (click)="chooseList(word_list)">{{word_list.wordCollectionDisplayName}} / {{word_list.wordListDisplayName}}</li>
 </ul>
