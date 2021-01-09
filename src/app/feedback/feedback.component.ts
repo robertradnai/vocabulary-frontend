@@ -73,11 +73,9 @@ export class FeedbackComponent implements OnInit {
 
     formData.append("name", formGroup["name"]);
     formData.append("email", formGroup["email"]);
-    formData.append("subscribe", formGroup["subscribe"]);
+    formData.append("is_subscribe", formGroup["subscribe"]);
     formData.append("subject", formGroup["subject"]);
     formData.append("message", formGroup["message"]);
-
-    console.log("Data received from the form: "+ JSON.stringify(formData));
 
     this.quizService.submitFeedback(formData).subscribe(
       res => {
