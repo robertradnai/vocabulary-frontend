@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: '', component: WordListChoiceComponent},
   { path: 'quiz', component: QuizComponent},
   { path: 'feedback', component: FeedbackComponent},
-  { path: 'about', component: AboutComponent}
+  //{ path: 'about', component: AboutComponent}
   //{ path: 'word-lists', component: WordListChoiceComponent}
 ]; // sets up routes constant where you define your routes
 
