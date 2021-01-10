@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 :root {
-    --primary-color: rgb(255, 229, 195);
-    --secondary-color: rgb(247, 144, 9);
+    --primary-color: #ffe5c3;
+    --secondary-color: rgb(255, 183, 88);
     --primary-font-color: #222;
 }
 
@@ -21,6 +21,17 @@ body {
 p {
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+h1 {
+    font-size: 14pt;
+}
+
+ul.quiz-directives li {
+    margin-left: 1.8em;
+    padding-left: .5em;
+    padding-bottom: 1em;
+    line-height: 135%;
 }
 
 .container {
@@ -53,7 +64,7 @@ p {
 	display: flex;
 	align-items: center;
     justify-content: space-around;
-    margin-bottom: .3em;
+    margin-bottom: .2em;
 }
 
 .app-header ul li {
@@ -67,7 +78,10 @@ p {
 .app-header a, .app-header a:visited {
     color: var(--primary-font-color);
     text-decoration: none;
+}
 
+.app-header a:hover {
+    text-decoration: underline;
 }
 
 .logo-text {

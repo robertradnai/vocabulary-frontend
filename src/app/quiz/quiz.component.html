@@ -1,5 +1,5 @@
 
-<p>Chosen word list: {{chosenWordList.wordListDisplayName}} <button (click)="goBack()">Back</button>
+<p>{{chosenWordList.wordCollectionDisplayName}} / {{chosenWordList.wordListDisplayName}} <button (click)="goBack()">Back to list choice</button>
 <span *ngIf="isShowProgressHeader()"><p>{{getBatchProgressLabel()}}</p></span>
 
 
@@ -7,9 +7,13 @@
 
     <div *ngSwitchCase="eQuizDialogState.Intro">
         <p>
-            You'll see a few flashcards, try to memorize them. Then you'll see questions based on 
-            these flashcard and later, you'll also see questions that you've already been answered.
+            You'll see
         </p>
+        <ul class="quiz-directives">
+            <li>a few flashcards, try to memorize them,</li>
+            <li>questions based on the new flashcards,</li>
+            <li>and questions based on earlier flashcards to deepen your knowledge.</li>
+        </ul>
     </div>
 
     <div *ngSwitchCase="eQuizDialogState.Summary">
