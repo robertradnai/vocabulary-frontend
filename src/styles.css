@@ -1,1 +1,110 @@
 /* You can add global styles to this file, and also import other style files */
+
+:root {
+    --primary-color: rgb(255, 229, 195);
+    --secondary-color: rgb(247, 144, 9);
+    --primary-font-color: #222;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+body {
+    font-family: 'Verdana', sans-serif;
+    color: var(--primary-font-color);
+}
+
+p {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.container {
+    min-width: 300px;
+    max-width: 700px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 10px;
+    overflow: none;
+    /*background-color: aquamarine;*/
+} 
+
+.app-header {
+	flex-shrink: 0;
+	background: var(--primary-color);
+	color: var(--primary-font-color);
+    padding: 0 auto;
+    margin: 0 auto;
+    font-size: 14px;
+
+    min-width: 300px;
+    max-width: 700px;
+    width: 100%;
+    align-items: center;
+    text-transform: uppercase;
+
+}
+
+.app-header ul {
+	display: flex;
+	align-items: center;
+    justify-content: space-around;
+    margin-bottom: .3em;
+}
+
+.app-header ul li {
+	display: flex;
+	flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: .5em;
+}
+
+.app-header a, .app-header a:visited {
+    color: var(--primary-font-color);
+    text-decoration: none;
+
+}
+
+.logo-text {
+    text-align: center;
+    font-size: 15pt;
+    font-weight: bold;
+    margin: .3em;
+}
+
+/* Transformed based on https://angular.io/tutorial/toh-pt2 */
+.quiz-options {
+    margin: 0 0 2em 0;
+    list-style-type: none;
+    padding: 0;
+    /*width: 25em;*/
+  }
+  .quiz-options li, button {
+    cursor: pointer;
+    position: relative;
+    left: 0;
+    background-color: var(--primary-color);
+    margin: .5em 0;
+    padding: .3em 1em;
+    /*height: 1.6em;*/
+    /*border-radius: 4px;*/
+    list-style-type: none;
+    border: none;
+  }
+  .quiz-options li:hover, button:hover {
+    background-color: var(--secondary-color);
+    left: .1em;
+  }
+  .quiz-options li.selected {
+    background-color: #CFD8DC;
+    color: white;
+  }
+  .quiz-options li.selected:hover {
+    background-color: #BBD8DC;
+    color: white;
+  }

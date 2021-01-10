@@ -1,15 +1,24 @@
-<div class="container">
-<h1>{{title}}</h1>
-<ul>
-    <li><a href="/">Home</a></li>
-    <!--<li><a href="/about">About</a></li>-->
-    <li><a href="/quiz">Current quiz</a></li>
-    <li><a href="/feedback">Feedback and newsletter</a></li>
-</ul>
+<div class="content">
+  <header class="app-header">
+    <div class="container">
+      <p class="logo-text">{{title}}</p>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <!--<li><a href="/about">About</a></li>-->
+          <li><a href="/quiz">Current quiz</a></li>
+          <li><a href="/feedback">Contact</a></li>
+      </ul>
+  
+    </div>
 
-<router-outlet></router-outlet>
-<!--
-<p>Subscribe if you're interested in hearing updates about this demo application:</p>
-<input placeholder="your email address"> <button>Subscribe</button>
--->
+  </header>
+   
+  <div class="main-content container">
+    <router-outlet></router-outlet>
+  </div>
+  
+  <!--
+  <p>Subscribe if you're interested in hearing updates about this demo application:</p>
+  <input placeholder="your email address"> <button>Subscribe</button>
+  -->
 </div> 
