@@ -127,7 +127,7 @@ export class QuizComponent implements OnInit {
         this.resultText = "Good answer!"
       }else {
         this.resultText = "Incorrect answer!";
-        this.quizDialogState = QuizDialogState.Flashcard;
+        //this.quizDialogState = QuizDialogState.Flashcard;
       }
     }
   }
