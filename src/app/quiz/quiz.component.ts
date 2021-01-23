@@ -57,6 +57,7 @@ export class QuizComponent implements OnInit {
 
     }else {
       // A word list has been chosen
+      this.nextButtonLabel = "Loading..."
 
       // Registering the guest user if needed
       console.debug("Stored guest jwt type in pickQuestion: "+(typeof localStorage.getItem("guestJwt")));
@@ -82,7 +83,7 @@ export class QuizComponent implements OnInit {
         console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
         this.quizBatch = resPickedQuestions.quizList;
         this.answers = new Map()
-
+        this.nextButtonLabel = "Next"
       }, errPickedQuestion => {
         console.warn(JSON.stringify(errPickedQuestion));
         this.quizService.setStoredGuestJwt(null);
