@@ -1,7 +1,6 @@
 
-<p>{{chosenWordList.wordCollectionDisplayName}} / {{chosenWordList.wordListDisplayName}} <button (click)="goBack()">Back to list choice</button>
-<span *ngIf="isShowProgressHeader()"><p>{{getBatchProgressLabel()}}</p></span>
-
+<p>{{chosenWordList.wordCollectionDisplayName}} / {{chosenWordList.wordListDisplayName}} &nbsp; 
+    <button (click)="goBack()">Back to list choice</button></p>
 
 <div [ngSwitch]="quizDialogState">
 
@@ -22,24 +21,39 @@
     </div>
 
     <div *ngSwitchCase="eQuizDialogState.Question" class="quiz-options">
-        <p>How would you translate the expression below?</p>
-        <p><b>{{getCurrentQuizPackage().question.text}}</b></p>
-
+        <p class="language-label">English</p>
+        
+        <p class="expression">{{getCurrentQuizPackage().question.text}}</p>
+        
+        <p class="language-label">Finnish - how would you translate?</p>
         <ul class="options">
-            <li *ngFor="let option of getCurrentQuizPackage().question.options" (click)="chooseOption(option)">{{option}}</li>
+            <li style="padding-left: 7pt; margin-left: 13pt;" 
+                *ngFor="let option of getCurrentQuizPackage().question.options" (click)="chooseOption(option)">{{option}}</li>
         </ul>
+        <div style="height: 15pt; padding: 9pt 0;">
+            <p style="padding: 0; margin: 0;">{{resultText}}</p>
+        </div>
+        
     </div>
     
     <div *ngSwitchCase="eQuizDialogState.Flashcard">
-        <p><b>Expression details:</b></p>
-        <p>Lang 1: {{getCurrentQuizPackage().flashcard.lang1}} </p>
-        <p>Lang 2: {{getCurrentQuizPackage().flashcard.lang2}} </p>
-        <p>Remarks: {{getCurrentQuizPackage().flashcard.remarks}} </p>
+        <!--<p>Memorize the following expression:</p>-->
+        
+        <p class="language-label">Finnish</p>
+        <p class="expression"> {{getCurrentQuizPackage().flashcard.lang1}} </p>
+        
+        <p class="language-label">English</p>
+        <p class="expression"> {{getCurrentQuizPackage().flashcard.lang2}} </p>
+        
+        <p class="language-label">Remarks</p>
+        <p class="expression">{{getCurrentQuizPackage().flashcard.remarks}} </p>
     </div>
 
 </div>
 
-
-<p>{{resultText}}</p>
-<button (click)="onNextButtonClick()" [disabled]="isNextButtonDisabled()">{{nextButtonLabel}}</button>
+<p>
+    <button (click)="onNextButtonClick()" [disabled]="isNextButtonDisabled()">{{nextButtonLabel}}</button>
+    &nbsp;&nbsp;
+    <span *ngIf="isShowProgressHeader()">{{getBatchProgressLabel()}}</span>
+</p>
 

@@ -1,0 +1,13 @@
+.language-label  {
+    text-transform: uppercase;
+    color: grey;
+    font-size: 11pt;
+    margin-bottom: .7em;
+}
+
+.expression {
+    padding-left: 20pt;
+    min-height: 16pt;
+    margin-top: 0em;
+    margin-bottom: 0em;
+}

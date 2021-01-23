@@ -172,9 +172,9 @@ export class QuizComponent implements OnInit {
 
   getBatchProgressLabel() {
     if(this.quizDialogState == QuizDialogState.Flashcard || this.quizDialogState == QuizDialogState.Question) {
-      return "Progress in this round: " 
+      return "" 
         + (this.quizCounter+1)+"/"+this.quizBatch.length 
-        + ", on the whole list: "+this.learningProgress+".";
+        + " | "+this.learningProgress+" overall";
     }else {
       return "";
     }
