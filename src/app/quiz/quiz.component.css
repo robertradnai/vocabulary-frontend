@@ -11,3 +11,17 @@
     margin-top: 0em;
     margin-bottom: 0em;
 }
+
+.answered:hover {
+    background-color: var(--primary-color);
+    left: 0;
+    cursor: default;
+}
+
+.good-answer, .good-answer:hover {
+    background-color: greenyellow;
+}
+
+.wrong-answer, .wrong-answer:hover {
+    background-color: crimson;
+}

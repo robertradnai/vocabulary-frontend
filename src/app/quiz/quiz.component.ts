@@ -19,6 +19,8 @@ export class QuizComponent implements OnInit {
   quizCounter: number = -1;
   questionIsAnswered: boolean = false;
   answers: Map<number, boolean>;
+  isAnswerCorrect = false;
+  pickedAnswer: string ='';
 
   // UI
   eQuizDialogState = QuizDialogState
@@ -117,16 +119,35 @@ export class QuizComponent implements OnInit {
       console.log("this.choiceQuiz.flashcard.lang2 "+ this.getCurrentQuizPackage().flashcard.lang2);
 
       // Evaluating answer
-      let is_correct = option == this.getCurrentQuizPackage().flashcard.lang1;
-      this.answers.set(this.getCurrentQuizPackage().question.rowKey, is_correct);
+      this.isAnswerCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+      this.pickedAnswer = option;
+      this.answers.set(this.getCurrentQuizPackage().question.rowKey, this.isAnswerCorrect);
 
-      if (is_correct) {
+      if (this.isAnswerCorrect) {
         this.resultText = "Good answer!"
       }else {
         this.resultText = "Incorrect answer!";
         this.quizDialogState = QuizDialogState.Flashcard;
       }
     }
+  }
+
+  isAnsweredAndCorrect(option: string): boolean {
+    
+    let isOptionCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+    console.log("isAnsweredAndCorrect called with input "+option+
+            ", returning "+(this.questionIsAnswered && isOptionCorrect));
+    return this.questionIsAnswered && isOptionCorrect;
+  }
+
+  isAnsweredAndWrong(option: string): boolean {
+    let isOptionPicked = option == this.pickedAnswer;
+    let isPickedCorrect = this.pickedAnswer == this.getCurrentQuizPackage().flashcard.lang1;
+    let retVal = (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
+    console.log("isAnsweredAndWrong called, option: "+option+", correct answer: "+this.getCurrentQuizPackage().flashcard.lang1
+            +", picked answer: "+this.pickedAnswer+", isPickedCorrect: "+isPickedCorrect+", returning "+
+            retVal);
+    return (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
   }
 
   async onNextButtonClick() {
@@ -168,6 +189,10 @@ export class QuizComponent implements OnInit {
         || this.questionIsAnswered) 
       && (this.quizBatch.length > 0)
     );
+  }
+
+  isQuizChoiceButtonDisabled(): boolean {
+    return this.questionIsAnswered;
   }
 
   getBatchProgressLabel() {

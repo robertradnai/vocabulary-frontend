@@ -27,8 +27,10 @@
         
         <p class="language-label">Finnish - how would you translate?</p>
         <ul class="options">
-            <li style="padding-left: 7pt; margin-left: 13pt;" 
-                *ngFor="let option of getCurrentQuizPackage().question.options" (click)="chooseOption(option)">{{option}}</li>
+            <li [ngClass]="{'answered': isQuizChoiceButtonDisabled(), 'good-answer': isAnsweredAndCorrect(option), 'wrong-answer': isAnsweredAndWrong(option)}"
+                style="padding-left: 7pt; margin-left: 13pt;" 
+                *ngFor="let option of getCurrentQuizPackage().question.options" 
+                (click)="chooseOption(option)">{{option}}</li>
         </ul>
         <div style="height: 15pt; padding: 9pt 0;">
             <p style="padding: 0; margin: 0;">{{resultText}}</p>
