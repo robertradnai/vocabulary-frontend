@@ -29,6 +29,8 @@ export interface PickQuestionsResponse {
 
 export interface QuizDirectives {
     showFlashcard: boolean
+    lang1_name: string
+    lang2_name: string
 }
 
 export enum QuizDialogState {
