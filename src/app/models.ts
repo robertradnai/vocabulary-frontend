@@ -1,19 +1,29 @@
-export interface ChoiceQuiz {
-    question: Question,
-    flashcard: Flashcard,
-    directives: QuizDirectives
+
+export interface PickQuestionsResponse {
+    quizList: QuizEntry[]
 }
 
-export interface Question {
-    options: string,
+export interface QuizEntry {
+    question: MultipleChoiceQuiz,
+    flashcard: Flashcard,
+}
+
+export interface MultipleChoiceQuiz {
     rowKey: number,
-    text: string
+    instructionHeader: string,
+    instructionContent: string,
+    optionsHeader: string,
+    options: string[],
+    correctAnswerIndices: number[]
 }
 
 export interface Flashcard {
     lang1: string,
     lang2: string,
-    remarks: string
+    remarks: string,
+    lang1Header: string,
+    lang2Header: string,
+    remarksHeader: string
 }
 
 export interface WordListAsChoice {
@@ -21,16 +31,6 @@ export interface WordListAsChoice {
     wordListDisplayName: string
     wordCollection: string
     wordList: string
-}
-
-export interface PickQuestionsResponse {
-    quizList: ChoiceQuiz[]
-}
-
-export interface QuizDirectives {
-    showFlashcard: boolean
-    lang1_name: string
-    lang2_name: string
 }
 
 export enum QuizDialogState {

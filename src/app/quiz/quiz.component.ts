@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChoiceQuiz, Question, QuizDialogState, WordListAsChoice } from '../models';
+import { PickQuestionsResponse, MultipleChoiceQuiz, QuizDialogState, WordListAsChoice, QuizEntry } from '../models';
 import { QuizService } from '../quiz-service.service'
 
 const quizStrategy: string = "dummy";
@@ -14,13 +14,14 @@ export class QuizComponent implements OnInit {
 
   
   // State-related (non-UI)
-  quizBatch: ChoiceQuiz[] = [];
+  //quizBatch: ChoiceQuiz[] = [];
   chosenWordList: WordListAsChoice;
   quizCounter: number = -1;
   questionIsAnswered: boolean = false;
   answers: Map<number, boolean>;
   isAnswerCorrect = false;
   pickedAnswer: string ='';
+  pickedQuestionsResponse: PickQuestionsResponse;
 
   // UI
   eQuizDialogState = QuizDialogState
@@ -46,7 +47,7 @@ export class QuizComponent implements OnInit {
 
   async fetchQuizesFromServer() {
 
-    this.quizBatch = [];
+    this.pickedQuestionsResponse = null;
     // Is a list chosen?
     this.chosenWordList = this.quizService.getChosenWordList()
     console.debug("Stored chosen word list: "+JSON.stringify(this.chosenWordList));
@@ -81,7 +82,8 @@ export class QuizComponent implements OnInit {
         quizStrategy
       ).toPromise().then(resPickedQuestions => {
         console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
-        this.quizBatch = resPickedQuestions.quizList;
+        this.pickedQuestionsResponse = resPickedQuestions
+        //this.quizBatch = resPickedQuestions.quizList;
         this.answers = new Map()
         this.nextButtonLabel = "Next"
       }, errPickedQuestion => {
@@ -158,9 +160,9 @@ export class QuizComponent implements OnInit {
     this.questionIsAnswered = false;
     //this.learningProgress = "";
     
-    if(this.quizCounter > this.quizBatch.length) {
+    if(this.quizCounter > this.pickedQuestionsResponse.quizList.length) {
       throw new Error("Bad state during quiz!");
-    }else if(this.quizCounter + 1 == this.quizBatch.length) {
+    }else if(this.quizCounter + 1 == this.pickedQuestionsResponse.quizList.length) {
       // All questions were answered
       // Show summary, send answers and load new questions
       this.quizDialogState = QuizDialogState.Summary
@@ -172,10 +174,10 @@ export class QuizComponent implements OnInit {
       this.quizCounter = -1;
     }else {
       this.quizCounter += 1;
-      if (this.getCurrentQuizPackage().directives.showFlashcard) {
-        this.quizDialogState = QuizDialogState.Flashcard;
-      }else {
+      if (this.getCurrentQuizPackage().question != null) {
         this.quizDialogState = QuizDialogState.Question;
+      }else {
+        this.quizDialogState = QuizDialogState.Flashcard;
       }
     }
   }
@@ -188,7 +190,7 @@ export class QuizComponent implements OnInit {
         || this.quizDialogState == QuizDialogState.Intro 
         || ((this.quizDialogState == QuizDialogState.Summary) && (this.quizCounter == -1))
         || this.questionIsAnswered) 
-      && (this.quizBatch.length > 0)
+      && (this.pickedQuestionsResponse != null)
     );
   }
 
@@ -199,7 +201,7 @@ export class QuizComponent implements OnInit {
   getBatchProgressLabel() {
     if(this.quizDialogState == QuizDialogState.Flashcard || this.quizDialogState == QuizDialogState.Question) {
       return "" 
-        + (this.quizCounter+1)+"/"+this.quizBatch.length 
+        + (this.quizCounter+1)+"/"+this.pickedQuestionsResponse.quizList.length 
         + " | "+this.learningProgress+" overall";
     }else {
       return "";
@@ -211,8 +213,8 @@ export class QuizComponent implements OnInit {
     this.router.navigate(['/word-lists']);
   }
 
-  getCurrentQuizPackage(): ChoiceQuiz {
-    return this.quizBatch[this.quizCounter]
+  getCurrentQuizPackage(): QuizEntry {
+    return this.pickedQuestionsResponse.quizList[this.quizCounter]
   }
 
   isShowProgressHeader(): boolean {

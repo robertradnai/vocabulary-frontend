@@ -21,11 +21,11 @@
     </div>
 
     <div *ngSwitchCase="eQuizDialogState.Question" class="quiz-options">
-        <p class="language-label">{{getCurrentQuizPackage().directives.lang2_name}}</p>
+        <p class="language-label">{{getCurrentQuizPackage().question.instructionHeader}}</p>
         
-        <p class="expression">{{getCurrentQuizPackage().question.text}}</p>
+        <p class="expression">{{getCurrentQuizPackage().question.instructionContent}}</p>
         
-        <p class="language-label">{{getCurrentQuizPackage().directives.lang1_name}} - how would you translate?</p>
+        <p class="language-label">{{getCurrentQuizPackage().question.optionsHeader}} - how would you translate?</p>
         <ul class="options">
             <li [ngClass]="{'answered': isQuizChoiceButtonDisabled(), 'good-answer': isAnsweredAndCorrect(option), 'wrong-answer': isAnsweredAndWrong(option)}"
                 style="padding-left: 7pt; margin-left: 13pt;" 
@@ -41,13 +41,13 @@
     <div *ngSwitchCase="eQuizDialogState.Flashcard">
         <!--<p>Memorize the following expression:</p>-->
         
-        <p class="language-label">{{getCurrentQuizPackage().directives.lang1_name}}</p>
+        <p class="language-label">{{getCurrentQuizPackage().flashcard.lang1Header}}</p>
         <p class="expression"> {{getCurrentQuizPackage().flashcard.lang1}} </p>
         
-        <p class="language-label">{{getCurrentQuizPackage().directives.lang2_name}}</p>
+        <p class="language-label">{{getCurrentQuizPackage().flashcard.lang2Header}}</p>
         <p class="expression"> {{getCurrentQuizPackage().flashcard.lang2}} </p>
         
-        <p class="language-label">Remarks</p>
+        <p class="language-label">{{ getCurrentQuizPackage().flashcard.remarksHeader }}</p>
         <p class="expression">{{getCurrentQuizPackage().flashcard.remarks}} </p>
     </div>
 

@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ChoiceQuiz, WordListAsChoice, PickQuestionsResponse } from './models'
+import { WordListAsChoice, PickQuestionsResponse } from './models'
 
 @Injectable({
   providedIn: 'root'
