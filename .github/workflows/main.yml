@@ -39,7 +39,7 @@ jobs:
         id: extract_branch
       - name: Putting the built files into a ZIP file
         run: |
-          zip -r dist.zip dist/vocabulary-front-end/*
+          zip -r dist.zip dist/vocabulary-front-end
       - name: Writing current date and time into an environment variable
         shell: bash
         run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
