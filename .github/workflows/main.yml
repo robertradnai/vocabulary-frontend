@@ -42,6 +42,6 @@ jobs:
         with:
           artifacts: "dist/vocabulary-front-end/*"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: $GIT_BRANCH
+          tag: ${{ env.GIT_BRANCH }}
           allow_updates: true
           replace_artifacts: true
