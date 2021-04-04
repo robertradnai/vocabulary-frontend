@@ -33,3 +33,4 @@ jobs:
         with:
           artifacts: "dist/vocabulary-front-end/*"
           token: ${{ secrets.GITHUB_TOKEN }}
+          tag: "$(git rev-parse --abbrev-ref HEAD)"
