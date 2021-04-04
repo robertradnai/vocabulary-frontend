@@ -47,5 +47,5 @@ jobs:
           artifacts: "dist.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.extract_branch.outputs.branch }}
-          allow_updates: true
+          allowUpdates: true
           replace_artifacts: true
