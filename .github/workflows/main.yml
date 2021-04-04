@@ -32,16 +32,17 @@ jobs:
         run: |
           npm install
           npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/     
-      - name: Getting branch name
-        run: |
-          GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-          echo $GIT_BRANCH
+      - name: Extract branch name
+        # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         # https://github.com/ncipollo/release-action
         with:
           artifacts: "dist/vocabulary-front-end/*"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.GIT_BRANCH }}
+          tag: ${{ steps.extract_branch.outputs.branch }}
           allow_updates: true
           replace_artifacts: true
