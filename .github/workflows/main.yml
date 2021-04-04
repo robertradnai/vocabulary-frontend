@@ -32,11 +32,16 @@ jobs:
         run: |
           npm install
           npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/     
+      - name: Getting branch name
+        run: |
+          GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          echo $GIT_BRANCH
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
+        # https://github.com/ncipollo/release-action
         with:
           artifacts: "dist/vocabulary-front-end/*"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: test_upload
+          tag: $GIT_BRANCH
           allow_updates: true
           replace_artifacts: true
