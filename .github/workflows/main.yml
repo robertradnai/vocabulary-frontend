@@ -1,7 +1,11 @@
 
 # Source: https://betterprogramming.pub/building-angular-apps-using-github-actions-bf916b56ed0c
 
-on: push
+
+on:
+  push:
+    branches: [ main, develop ]
+
 name: Build Angular
 jobs:
   build:
@@ -33,4 +37,4 @@ jobs:
         with:
           artifacts: "dist/vocabulary-front-end/*"
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: "$(git rev-parse --abbrev-ref HEAD)"
+          tag: test_upload
