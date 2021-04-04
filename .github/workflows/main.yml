@@ -41,7 +41,9 @@ jobs:
         run: |
           zip -r dist.zip dist/vocabulary-front-end/*
       - name: Writing current date and time into an environment variable
-        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+        shell: bash
+        run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
+        id: current_datetime
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         # https://github.com/ncipollo/release-action
@@ -49,6 +51,6 @@ jobs:
           artifacts: "dist.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.extract_branch.outputs.branch }}
-          body: "Release was updated at ${{ env.NOW }}"
+          body: "Release was updated at ${{ steps.current_datetime.outputs.content }}"
           allowUpdates: true
           replacesArtifacts: true
