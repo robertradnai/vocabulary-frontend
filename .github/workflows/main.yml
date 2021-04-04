@@ -39,7 +39,7 @@ jobs:
         id: extract_branch
       - name: Putting the built files into a ZIP file
         run: |
-          rm dist.zip
+          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
           cd dist
           zip -r ../dist.zip vocabulary-front-end
       - name: Writing current date and time into an environment variable
