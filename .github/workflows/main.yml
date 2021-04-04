@@ -32,9 +32,13 @@ jobs:
         run: |
           npm install
           npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/
+      - name: Putting the built files into a ZIP file
+        run: |
+          zip -r dist.zip dist/vocabulary-front-end/*
+      
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "dist/vocabulary-front-end/*"
+          artifacts: "dist.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: test_upload
