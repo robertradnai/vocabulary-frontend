@@ -25,7 +25,7 @@
         
         <p class="expression">{{getCurrentQuizPackage().question.instructionContent}}</p>
         
-        <p class="language-label">{{getCurrentQuizPackage().question.optionsHeader}} - how would you translate?</p>
+        <p class="language-label">{{getCurrentQuizPackage().question.optionsHeader}}</p>
         <ul class="options">
             <li [ngClass]="{'answered': isQuizChoiceButtonDisabled(), 'good-answer': isAnsweredAndCorrect(option), 'wrong-answer': isAnsweredAndWrong(option)}"
                 style="padding-left: 7pt; margin-left: 13pt;" 
