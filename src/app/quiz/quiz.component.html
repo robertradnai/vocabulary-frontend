@@ -1,15 +1,18 @@
 
-<p>Chosen word list: {{chosenWordList.wordListDisplayName}} <button (click)="goBack()">Back</button>
-<span *ngIf="isShowProgressHeader()"><p>{{getBatchProgressLabel()}}</p></span>
-
+<p>{{chosenWordList.wordCollectionDisplayName}} / {{chosenWordList.wordListDisplayName}} &nbsp; 
+    <button (click)="goBack()">Back to list choice</button></p>
 
 <div [ngSwitch]="quizDialogState">
 
     <div *ngSwitchCase="eQuizDialogState.Intro">
         <p>
-            You'll see a few flashcards, try to memorize them. Then you'll see questions based on 
-            these flashcard and later, you'll also see questions that you've already been answered.
+            You'll see
         </p>
+        <ul class="quiz-directives">
+            <li>a few flashcards, try to memorize them,</li>
+            <li>questions based on the new flashcards,</li>
+            <li>and questions based on earlier flashcards to deepen your knowledge.</li>
+        </ul>
     </div>
 
     <div *ngSwitchCase="eQuizDialogState.Summary">
@@ -18,24 +21,41 @@
     </div>
 
     <div *ngSwitchCase="eQuizDialogState.Question" class="quiz-options">
-        <p>How would you translate the expression below?</p>
-        <p><b>{{getCurrentQuizPackage().question.text}}</b></p>
-
+        <p class="language-label">{{getCurrentQuizPackage().question.instructionHeader}}</p>
+        
+        <p class="expression">{{getCurrentQuizPackage().question.instructionContent}}</p>
+        
+        <p class="language-label">{{getCurrentQuizPackage().question.optionsHeader}} - how would you translate?</p>
         <ul class="options">
-            <li *ngFor="let option of getCurrentQuizPackage().question.options" (click)="chooseOption(option)">{{option}}</li>
+            <li [ngClass]="{'answered': isQuizChoiceButtonDisabled(), 'good-answer': isAnsweredAndCorrect(option), 'wrong-answer': isAnsweredAndWrong(option)}"
+                style="padding-left: 7pt; margin-left: 13pt;" 
+                *ngFor="let option of getCurrentQuizPackage().question.options" 
+                (click)="chooseOption(option)">{{option}}</li>
         </ul>
+        <div style="height: 15pt; padding: 9pt 0;">
+            <p style="padding: 0; margin: 0;">{{resultText}}</p>
+        </div>
+        
     </div>
     
     <div *ngSwitchCase="eQuizDialogState.Flashcard">
-        <p><b>Expression details:</b></p>
-        <p>Lang 1: {{getCurrentQuizPackage().flashcard.lang1}} </p>
-        <p>Lang 2: {{getCurrentQuizPackage().flashcard.lang2}} </p>
-        <p>Remarks: {{getCurrentQuizPackage().flashcard.remarks}} </p>
+        <!--<p>Memorize the following expression:</p>-->
+        
+        <p class="language-label">{{getCurrentQuizPackage().flashcard.lang1Header}}</p>
+        <p class="expression"> {{getCurrentQuizPackage().flashcard.lang1}} </p>
+        
+        <p class="language-label">{{getCurrentQuizPackage().flashcard.lang2Header}}</p>
+        <p class="expression"> {{getCurrentQuizPackage().flashcard.lang2}} </p>
+        
+        <p class="language-label">{{ getCurrentQuizPackage().flashcard.remarksHeader }}</p>
+        <p class="expression">{{getCurrentQuizPackage().flashcard.remarks}} </p>
     </div>
 
 </div>
 
-
-<p>{{resultText}}</p>
-<button (click)="onNextButtonClick()" [disabled]="isNextButtonDisabled()">{{nextButtonLabel}}</button>
+<p>
+    <button (click)="onNextButtonClick()" [disabled]="isNextButtonDisabled()">{{nextButtonLabel}}</button>
+    &nbsp;&nbsp;
+    <span *ngIf="isShowProgressHeader()">{{getBatchProgressLabel()}}</span>
+</p>
 
