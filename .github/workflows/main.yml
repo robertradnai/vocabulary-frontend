@@ -1,0 +1,58 @@
+
+# Source: https://betterprogramming.pub/building-angular-apps-using-github-actions-bf916b56ed0c
+
+
+on:
+  push:
+    branches: [ main, develop ]
+
+name: Build Angular
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install and npm run build
+        run: |
+          npm install
+          npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/     
+      - name: Extract branch name
+        # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
+      - name: Putting the built files into a ZIP file
+        run: |
+          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
+          cd dist
+          zip -r ../dist.zip vocabulary-front-end
+      - name: Writing current date and time into an environment variable
+        shell: bash
+        run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
+        id: current_datetime
+      - name: Push Build to Releases
+        uses: ncipollo/release-action@v1
+        # https://github.com/ncipollo/release-action
+        with:
+          artifacts: "dist.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.extract_branch.outputs.branch }}
+          body: "Release was updated at ${{ steps.current_datetime.outputs.content }}"
+          allowUpdates: true
+          replacesArtifacts: true
