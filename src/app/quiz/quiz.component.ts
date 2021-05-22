@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PickQuestionsResponse, MultipleChoiceQuiz, QuizDialogState, WordListAsChoice, QuizEntry } from '../models';
+import { PickQuestionsResponse, MultipleChoiceQuiz, QuizDialogState, SharedListsResponse, QuizEntry } from '../models';
 import { QuizService } from '../quiz-service.service'
 
 const quizStrategy: string = "dummy";
@@ -15,7 +15,7 @@ export class QuizComponent implements OnInit {
   
   // State-related (non-UI)
   //quizBatch: ChoiceQuiz[] = [];
-  chosenWordList: WordListAsChoice;
+  chosenWordList: SharedListsResponse;
   quizCounter: number = -1;
   questionIsAnswered: boolean = false;
   answers: Map<number, boolean>;

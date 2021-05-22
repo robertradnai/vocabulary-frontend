@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { WordListAsChoice, PickQuestionsResponse } from './models'
+import { PickQuestionsResponse, SharedListsResponse } from './models'
 
 @Injectable({
   providedIn: 'root'
@@ -17,8 +17,8 @@ export class QuizService {
   constructor(private http: HttpClient, private router: Router) { }
 
   // Webpage access functions
-  getWordLists(): Observable<WordListAsChoice[]> {
-    return this.http.get<WordListAsChoice[]>('/api/vocabulary/shared-lists')
+  getWordLists(): Observable<SharedListsResponse[]> {
+    return this.http.get<SharedListsResponse[]>('/api/vocabulary/shared-lists')
   }
   postRegisterGuest() {
     return this.http.post<any>('/api/vocabulary/register-guest', null, {});
@@ -57,10 +57,10 @@ export class QuizService {
   }
 
   //Local storage functions
-  setChosenWordList(word_list: WordListAsChoice) {
+  setChosenWordList(word_list: SharedListsResponse) {
     localStorage.setItem("chosenWordList", JSON.stringify(word_list));
   }
-  getChosenWordList(): WordListAsChoice {
+  getChosenWordList(): SharedListsResponse {
     return JSON.parse(localStorage.getItem("chosenWordList"))
   }
   getStoredGuestJwt() {
