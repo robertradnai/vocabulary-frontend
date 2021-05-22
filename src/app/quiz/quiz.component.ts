@@ -77,8 +77,7 @@ export class QuizComponent implements OnInit {
 
       // Fetch a batch of questions
       this.quizService.getPickedQuestion(
-        this.chosenWordList.wordCollection, 
-        this.chosenWordList.wordList, 
+        this.chosenWordList.wordListId, 
         quizStrategy
       ).toPromise().then(resPickedQuestions => {
         console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
@@ -103,7 +102,7 @@ export class QuizComponent implements OnInit {
 
     console.log("Sending answers: "+JSON.stringify(answersJson));
 
-    await this.quizService.postAnswerQuestion(this.chosenWordList.wordCollection, this.chosenWordList.wordList, answersJson)
+    await this.quizService.postAnswerQuestion(this.chosenWordList.wordListId, answersJson)
       .toPromise().then(
       content => {
         console.log("Got content from answer-question: "+JSON.stringify(content))

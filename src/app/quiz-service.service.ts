@@ -25,14 +25,13 @@ export class QuizService {
   }
   postCloneWordList() {
     const params = new HttpParams()
-      .set("wordCollection", this.getChosenWordList().wordCollection)
+      .set("wordListId", this.getChosenWordList().wordListId.toString())
     return this.http.post<any>('/api/vocabulary/clone-word-list', null, {params: params});
   }
 
-  getPickedQuestion(wordCollection: string, wordList: string, quizStrategy: string) {
+  getPickedQuestion(wordListId: number, quizStrategy: string) {
     const params = new HttpParams()
-      .set("wordCollection", wordCollection)
-      .set("wordList", wordList)
+      .set("wordListId", wordListId.toString())
       .set("wordPickStrategy", quizStrategy); 
 
     const headers: HttpHeaders = new HttpHeaders()
@@ -40,10 +39,9 @@ export class QuizService {
     return this.http.get<PickQuestionsResponse>('/api/vocabulary/pick-question', options);
   }
 
-  postAnswerQuestion(wordCollection: string, wordList: string, answers) {
+  postAnswerQuestion(wordListId: number, answers) {
     const params = new HttpParams()
-      .set("wordCollection", wordCollection)
-      .set("wordList", wordList); 
+      .set("wordListId", wordListId.toString()); 
 
     const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };

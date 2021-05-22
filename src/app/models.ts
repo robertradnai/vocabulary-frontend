@@ -31,6 +31,7 @@ export interface WordListAsChoice {
     wordListDisplayName: string
     wordCollection: string
     wordList: string
+    wordListId: number
 }
 
 export enum QuizDialogState {
