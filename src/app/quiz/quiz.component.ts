@@ -59,25 +59,9 @@ export class QuizComponent implements OnInit {
     }else {
       // A word list has been chosen
       this.nextButtonLabel = "Loading..."
-
-      // Registering the guest user if needed
-      console.debug("Stored guest jwt type in pickQuestion: "+(typeof localStorage.getItem("guestJwt")));
-      console.debug("Stored guest jwt value in pickQuestion: "+(localStorage.getItem("guestJwt")));
-      if (this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null") {
-        console.debug("No guest JWT is found, registering guest user...")   
-        console.debug("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
-        const res = await this.quizService.postRegisterGuest().toPromise()
-        localStorage.setItem("guestJwt", (res as any).guestJwt);
-        console.debug("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
-        await this.quizService.postCloneWordList().toPromise();
-        console.debug("Guest user was registered.") 
-      } else {
-        console.debug("The user is registered, fetching new question...")
-      }
-
       // Fetch a batch of questions
       this.quizService.getPickedQuestion(
-        this.chosenWordList.wordListId, 
+        this.chosenWordList.userWordListId, 
         quizStrategy
       ).toPromise().then(resPickedQuestions => {
         console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
@@ -102,7 +86,7 @@ export class QuizComponent implements OnInit {
 
     console.log("Sending answers: "+JSON.stringify(answersJson));
 
-    await this.quizService.postAnswerQuestion(this.chosenWordList.wordListId, answersJson)
+    await this.quizService.postAnswerQuestion(this.chosenWordList.userWordListId, answersJson)
       .toPromise().then(
       content => {
         console.log("Got content from answer-question: "+JSON.stringify(content))

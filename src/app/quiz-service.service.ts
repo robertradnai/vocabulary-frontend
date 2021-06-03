@@ -23,9 +23,10 @@ export class QuizService {
   postRegisterGuest() {
     return this.http.post<any>('/api/vocabulary/register-guest', null, {});
   }
-  postCloneWordList() {
+
+  postCloneWordList(availableWordListId: number) {
     const params = new HttpParams()
-      .set("availableWordListId", this.getChosenWordList().wordListId.toString())
+      .set("availableWordListId", availableWordListId.toString())
     return this.http.post<any>('/api/vocabulary/clone-word-list', null, {params: params});
   }
 
