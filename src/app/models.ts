@@ -34,11 +34,11 @@ export enum QuizDialogState {
 }
 
 export interface SharedListsResponse {
-    wordListId: number
+    availableWordListId: number
     wordListDisplayName: string
     description: string
     lang1: string
     lang2: string
-    isCloned: boolean
-    clonedListId: number
+    isAddedToUserWordLists: boolean
+    userWordListId: number
 }
