@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WordListAsChoice } from '../models';
+import { SharedListsResponse } from '../models';
 import { QuizService } from '../quiz-service.service';
 
 @Component({
@@ -12,7 +12,7 @@ export class WordListChoiceComponent implements OnInit {
 
   constructor(private quizService: QuizService, private router: Router) { }
 
-  word_lists: WordListAsChoice[]
+  word_lists: SharedListsResponse[]
 
   ngOnInit(): void {
     this.quizService.getWordLists().subscribe(content => {
@@ -22,7 +22,7 @@ export class WordListChoiceComponent implements OnInit {
     })
   }
 
-  chooseList(word_list: WordListAsChoice) {
+  chooseList(word_list: SharedListsResponse) {
     console.debug(JSON.stringify(word_list)+" was chosen.")
     // Store the chosen list
     this.quizService.setChosenWordList(word_list);

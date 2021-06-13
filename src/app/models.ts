@@ -26,16 +26,19 @@ export interface Flashcard {
     remarksHeader: string
 }
 
-export interface WordListAsChoice {
-    wordCollectionDisplayName: string
-    wordListDisplayName: string
-    wordCollection: string
-    wordList: string
-}
-
 export enum QuizDialogState {
     Intro,
     Question,
     Flashcard,
     Summary
+}
+
+export interface SharedListsResponse {
+    wordListId: number
+    wordListDisplayName: string
+    description: string
+    lang1: string
+    lang2: string
+    isCloned: boolean
+    clonedListId: number
 }

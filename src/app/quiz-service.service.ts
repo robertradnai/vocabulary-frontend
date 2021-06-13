@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { WordListAsChoice, PickQuestionsResponse } from './models'
+import { PickQuestionsResponse, SharedListsResponse } from './models'
 
 @Injectable({
   providedIn: 'root'
@@ -17,22 +17,21 @@ export class QuizService {
   constructor(private http: HttpClient, private router: Router) { }
 
   // Webpage access functions
-  getWordLists(): Observable<WordListAsChoice[]> {
-    return this.http.get<WordListAsChoice[]>('/api/vocabulary/shared-lists')
+  getWordLists(): Observable<SharedListsResponse[]> {
+    return this.http.get<SharedListsResponse[]>('/api/vocabulary/shared-lists')
   }
   postRegisterGuest() {
     return this.http.post<any>('/api/vocabulary/register-guest', null, {});
   }
   postCloneWordList() {
     const params = new HttpParams()
-      .set("wordCollection", this.getChosenWordList().wordCollection)
+      .set("wordListId", this.getChosenWordList().wordListId.toString())
     return this.http.post<any>('/api/vocabulary/clone-word-list', null, {params: params});
   }
 
-  getPickedQuestion(wordCollection: string, wordList: string, quizStrategy: string) {
+  getPickedQuestion(wordListId: number, quizStrategy: string) {
     const params = new HttpParams()
-      .set("wordCollection", wordCollection)
-      .set("wordList", wordList)
+      .set("wordListId", wordListId.toString())
       .set("wordPickStrategy", quizStrategy); 
 
     const headers: HttpHeaders = new HttpHeaders()
@@ -40,10 +39,9 @@ export class QuizService {
     return this.http.get<PickQuestionsResponse>('/api/vocabulary/pick-question', options);
   }
 
-  postAnswerQuestion(wordCollection: string, wordList: string, answers) {
+  postAnswerQuestion(wordListId: number, answers) {
     const params = new HttpParams()
-      .set("wordCollection", wordCollection)
-      .set("wordList", wordList); 
+      .set("wordListId", wordListId.toString()); 
 
     const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };
@@ -59,10 +57,10 @@ export class QuizService {
   }
 
   //Local storage functions
-  setChosenWordList(word_list: WordListAsChoice) {
+  setChosenWordList(word_list: SharedListsResponse) {
     localStorage.setItem("chosenWordList", JSON.stringify(word_list));
   }
-  getChosenWordList(): WordListAsChoice {
+  getChosenWordList(): SharedListsResponse {
     return JSON.parse(localStorage.getItem("chosenWordList"))
   }
   getStoredGuestJwt() {
