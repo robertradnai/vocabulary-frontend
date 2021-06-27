@@ -102,10 +102,11 @@ export class QuizComponent implements OnInit {
     }else {
       this.questionIsAnswered = true;
       console.log(option+" was chosen");
-      console.log("this.choiceQuiz.flashcard.lang2 "+ this.getCurrentQuizPackage().flashcard.lang2);
 
       // Evaluating answer
-      this.isAnswerCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+      let option_index = this.getCurrentQuizPackage().question.options.indexOf(option)
+      this.isAnswerCorrect = this.getCurrentQuizPackage().question.correctAnswerIndices.indexOf(option_index) != -1;
+
       this.pickedAnswer = option;
       this.answers.set(this.getCurrentQuizPackage().question.rowKey, this.isAnswerCorrect);
 
@@ -119,8 +120,10 @@ export class QuizComponent implements OnInit {
   }
 
   isAnsweredAndCorrect(option: string): boolean {
-    
-    let isOptionCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+
+    let option_index = this.getCurrentQuizPackage().question.options.indexOf(option)
+    let isOptionCorrect = this.getCurrentQuizPackage().question.correctAnswerIndices.indexOf(option_index) != -1;
+
     console.log("isAnsweredAndCorrect called with input "+option+
             ", returning "+(this.questionIsAnswered && isOptionCorrect));
     return this.questionIsAnswered && isOptionCorrect;
@@ -128,12 +131,7 @@ export class QuizComponent implements OnInit {
 
   isAnsweredAndWrong(option: string): boolean {
     let isOptionPicked = option == this.pickedAnswer;
-    let isPickedCorrect = this.pickedAnswer == this.getCurrentQuizPackage().flashcard.lang1;
-    let retVal = (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
-    console.log("isAnsweredAndWrong called, option: "+option+", correct answer: "+this.getCurrentQuizPackage().flashcard.lang1
-            +", picked answer: "+this.pickedAnswer+", isPickedCorrect: "+isPickedCorrect+", returning "+
-            retVal);
-    return (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
+    return (this.questionIsAnswered && isOptionPicked && !this.isAnswerCorrect);
   }
 
   async onNextButtonClick() {
