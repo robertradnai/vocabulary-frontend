@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { PickQuestionsResponse, SharedListsResponse } from './models'
 
 @Injectable({
@@ -30,23 +31,30 @@ export class QuizService {
     return this.http.post<any>('/api/vocabulary/clone-word-list', null, {params: params});
   }
 
-  getPickedQuestion(wordListId: number, quizStrategy: string) {
+  getPickedQuestion(wordListId: number, quizStrategy: string): Observable<PickQuestionsResponse> {
     const params = new HttpParams()
       .set("userWordListId", wordListId.toString())
       .set("wordPickStrategy", quizStrategy); 
 
-    const headers: HttpHeaders = new HttpHeaders()
+    const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };
-    return this.http.get<PickQuestionsResponse>('/api/vocabulary/pick-question', options);
+    const url = '/api/vocabulary/pick-question'
+    return this.http.get<PickQuestionsResponse>(url, options)
+      .pipe(tap(res => console.log(console.log(`${url} response: ${JSON.stringify(res)}`))));
   }
 
   postAnswerQuestion(wordListId: number, answers) {
+
+    const url = '/api/vocabulary/answer-question'
     const params = new HttpParams()
       .set("userWordListId", wordListId.toString()); 
-
     const headers: HttpHeaders = new HttpHeaders();
     const options = { params: params, headers: headers };
-    return this.http.post('/api/vocabulary/answer-question', {"answers": answers} , options);
+
+    console.log("Sending answers: "+JSON.stringify(answers));
+
+    return this.http.post(url, {"answers": answers} , options)
+    .pipe(tap(res => console.log(console.log(`${url} response: ${JSON.stringify(res)}`))));
   }
 
 
