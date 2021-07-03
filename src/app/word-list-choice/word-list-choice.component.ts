@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SharedListsResponse } from '../models';
+import { SharedListsResponse, UserListsResponse } from '../models';
 import { QuizService } from '../quiz-service.service';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-word-list-choice',
@@ -12,22 +13,29 @@ export class WordListChoiceComponent implements OnInit {
 
   constructor(private quizService: QuizService, private router: Router) { }
 
-  word_lists: SharedListsResponse[]
+  available_word_lists: SharedListsResponse[]
+  user_word_lists: UserListsResponse[]
 
   ngOnInit(): void {
-    this.quizService.getWordLists().subscribe(content => {
-      console.log("Received word lists: "+JSON.stringify(content))
-      this.word_lists = content;
-
+    this.quizService.getAvailableWordLists().subscribe(content => {
+      this.available_word_lists = content;
     })
+    
+    if (!(this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null")) {
+      this.quizService.getUserWordLists().subscribe(content => {
+        this.user_word_lists = content;
+      })
+    }else {
+      this.user_word_lists = []
+    }
+
   }
 
-  async chooseList(word_list: SharedListsResponse) {
+  async chooseAvailableList(word_list: SharedListsResponse) {
     console.debug(JSON.stringify(word_list)+" was chosen.")
     // Store the chosen list
     //this.quizService.setChosenWordList(word_list);
 
-    this.quizService.setStoredGuestJwt(null);
     await this.ensureRegistration()
     
     await this.quizService.postCloneWordList(word_list.availableWordListId)
@@ -43,16 +51,21 @@ export class WordListChoiceComponent implements OnInit {
       }) 
   }
 
+  async chooseUserList(word_list: UserListsResponse) {
+    this.quizService.setChosenWordList(word_list);
+    this.router.navigate(['/quiz'])
+  }
+
   async ensureRegistration() {
     // Registering the guest user if needed
-    console.debug("Stored guest jwt type in pickQuestion: "+(typeof localStorage.getItem("guestJwt")));
-    console.debug("Stored guest jwt value in pickQuestion: "+(localStorage.getItem("guestJwt")));
+    //console.debug("Stored guest jwt type in pickQuestion: "+(typeof this.quizService.getStoredGuestJwt()));
+    //console.debug("Stored guest jwt value in pickQuestion: "+(localStorage.getItem("guestJwt")));
     if (this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null") {
       console.debug("No guest JWT is found, registering guest user...")   
-      console.debug("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
+      //console.debug("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
       const res = await this.quizService.postRegisterGuest().toPromise()
       localStorage.setItem("guestJwt", (res as any).guestJwt);
-      console.debug("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
+      //console.debug("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
       console.debug("Guest user was registered.") 
     } else {
       console.debug("The user is registered, fetching new question...")

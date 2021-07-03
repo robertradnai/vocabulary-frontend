@@ -33,6 +33,8 @@ export enum QuizDialogState {
     Summary
 }
 
+
+
 export interface SharedListsResponse {
     availableWordListId: number
     wordListDisplayName: string
@@ -41,4 +43,10 @@ export interface SharedListsResponse {
     lang2: string
     isAddedToUserWordLists: boolean
     userWordListId: number
+}
+
+export interface UserListsResponse extends SharedListsResponse {
+    progress: number
+    createdAt: string
+    lastOpenedAt: string
 }

@@ -4,14 +4,20 @@
     you'll be able to save your progress and edit your own word lists.
 </p>
 
-<b>Choose a word list:</b>
+<b>Available word lists:</b>
 <p>
     Note that this is only a demo and you'll lose your progress 
     if navigate away from the quiz. 
 </p>
 <ul class="quiz-options" >
-    <li *ngFor="let word_list of word_lists" (click)="chooseList(word_list)">{{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
+    <li *ngFor="let word_list of available_word_lists" (click)="chooseAvailableList(word_list)">{{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
 </ul>
+
+<b>My word lists:</b>
+<ul class="quiz-options" >
+    <li *ngFor="let word_list of user_word_lists" (click)="chooseUserList(word_list)">[{{word_list.progress*100}}%] {{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
+</ul>
+
 <p>You can <a href="/contact">subscribe</a> to occasional emails about the state of development 
     or you can contact the developer <a href="/contact">here</a>.</p>
 <p>Made with love by <a href="https://www.linkedin.com/in/robert-radnai/">Robert Radnai</a>, an aspiring backend developer and data scientist.</p>

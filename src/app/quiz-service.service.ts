@@ -5,7 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { PickQuestionsResponse, SharedListsResponse } from './models'
+import { PickQuestionsResponse, SharedListsResponse, UserListsResponse } from './models'
 
 @Injectable({
   providedIn: 'root'
@@ -18,9 +18,18 @@ export class QuizService {
   constructor(private http: HttpClient, private router: Router) { }
 
   // Webpage access functions
-  getWordLists(): Observable<SharedListsResponse[]> {
-    return this.http.get<SharedListsResponse[]>('/api/vocabulary/shared-lists')
+  getAvailableWordLists(): Observable<SharedListsResponse[]> {
+    const url = '/api/vocabulary/shared-lists'
+    return this.http.get<SharedListsResponse[]>(url)
+      .pipe(tap(res => console.log(`${url} response: ${JSON.stringify(res)}`)));
   }
+
+  getUserWordLists(): Observable<UserListsResponse[]> {
+    const url = '/api/vocabulary/user-lists'
+    return this.http.get<UserListsResponse[]>(url)
+      .pipe(tap(res => console.log(`${url} response: ${JSON.stringify(res)}`)));
+  }
+
   postRegisterGuest() {
     return this.http.post<any>('/api/vocabulary/register-guest', null, {});
   }
@@ -40,7 +49,7 @@ export class QuizService {
     const options = { params: params, headers: headers };
     const url = '/api/vocabulary/pick-question'
     return this.http.get<PickQuestionsResponse>(url, options)
-      .pipe(tap(res => console.log(console.log(`${url} response: ${JSON.stringify(res)}`))));
+      .pipe(tap(res => console.log(`${url} response: ${JSON.stringify(res)}`)));
   }
 
   postAnswerQuestion(wordListId: number, answers) {
@@ -54,7 +63,7 @@ export class QuizService {
     console.log("Sending answers: "+JSON.stringify(answers));
 
     return this.http.post(url, {"answers": answers} , options)
-    .pipe(tap(res => console.log(console.log(`${url} response: ${JSON.stringify(res)}`))));
+    .pipe(tap(res => console.log(`${url} response: ${JSON.stringify(res)}`)));
   }
 
 
@@ -72,11 +81,14 @@ export class QuizService {
   getChosenWordList(): SharedListsResponse {
     return JSON.parse(localStorage.getItem("chosenWordList"))
   }
-  getStoredGuestJwt() {
-    return localStorage.getItem("guestJwt");
+  getStoredGuestJwt(): string {
+    const jwt = localStorage.getItem("guestJwt");
+    console.debug(`Got locally stored guest jwt: ${jwt}`);
+    return jwt;
   }
-  setStoredGuestJwt(guestJwt) {
-    return localStorage.setItem("guestJwt", guestJwt)
+  setStoredGuestJwt(guestJwt): void {
+    localStorage.setItem("guestJwt", guestJwt);
+    console.debug(`Set locally stored guest jwt: ${guestJwt}`);
   }
 }
 

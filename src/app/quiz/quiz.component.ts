@@ -186,7 +186,6 @@ export class QuizComponent implements OnInit {
   }
 
   goBack() {
-    this.quizService.setStoredGuestJwt(null);
     this.router.navigate(['/word-lists']);
   }
 
