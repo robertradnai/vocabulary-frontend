@@ -31,7 +31,7 @@ export class QuizService {
   }
 
   postRegisterGuest() {
-    return this.http.post<any>('/api/vocabulary/register-guest', null, {});
+    return this.http.post<any>('/api/vocabulary/auth/register-guest', null, {});
   }
 
   postCloneWordList(availableWordListId: number) {
