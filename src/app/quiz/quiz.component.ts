@@ -64,7 +64,6 @@ export class QuizComponent implements OnInit {
         this.chosenWordList.userWordListId, 
         quizStrategy
       ).toPromise().then(resPickedQuestions => {
-        console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
         this.pickedQuestionsResponse = resPickedQuestions
         //this.quizBatch = resPickedQuestions.quizList;
         this.answers = new Map()
@@ -84,12 +83,9 @@ export class QuizComponent implements OnInit {
       answersJson[key] = value  
     });
 
-    console.log("Sending answers: "+JSON.stringify(answersJson));
-
     await this.quizService.postAnswerQuestion(this.chosenWordList.userWordListId, answersJson)
       .toPromise().then(
       content => {
-        console.log("Got content from answer-question: "+JSON.stringify(content))
         this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ " %";
       }
     );
@@ -190,7 +186,6 @@ export class QuizComponent implements OnInit {
   }
 
   goBack() {
-    this.quizService.setStoredGuestJwt(null);
     this.router.navigate(['/word-lists']);
   }
 
