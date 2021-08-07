@@ -24,35 +24,38 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      
       - name: Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      
       - name: update build version in the source code
         run: |
           echo export const version = { number: \"snapshot-${GITHUB_REF#refs/heads/}-$(date --iso-8601=seconds)\" } > src/version.ts
-      - name: npm install and npm run build
-        run: |
-          npm install
-          npm run-script ng build -- --${{ github.head_ref }} --base-href /vocabulary/ --deploy-url /vocabulary/     
+      
       - name: Extract branch name
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+      
       - name: npm install and npm run build
         run: |
           npm install
-          npm run-script ng build -- --${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
+          npm run-script ng build -- --configuration=${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
+      
       - name: Putting the built files into a ZIP file
         run: |
           rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
           cd dist
           zip -r ../dist.zip vocabulary-front-end
+      
       - name: Writing current date and time into an environment variable
         shell: bash
         run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
         id: current_datetime
+      
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         # https://github.com/ncipollo/release-action
