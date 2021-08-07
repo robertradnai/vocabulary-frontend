@@ -45,17 +45,18 @@ jobs:
           npm install
           npm run-script ng build -- --configuration=${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
       
-      - name: Putting the built files into a ZIP file
-        run: |
-          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
-          cd dist
-          zip -r ../dist.zip vocabulary-front-end
-      
       - name: Writing current date and time into an environment variable
         shell: bash
         run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
         id: current_datetime
       
+      - name: Putting the built files into a ZIP file
+        run: |
+          cd dist
+          echo "Timestamp: ${{ steps.current_datetime.outputs.content }}" > vocabulary-front-end/build-trace.txt
+          echo "Branch: ${{ steps.current_datetime.outputs.content }}" >> vocabulary-front-end/build-trace.txt
+          zip -r ../dist.zip vocabulary-front-end
+  
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         # https://github.com/ncipollo/release-action
