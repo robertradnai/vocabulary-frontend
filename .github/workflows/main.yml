@@ -40,6 +40,10 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
+      - name: npm install and npm run build
+        run: |
+          npm install
+          npm run-script ng build -- --${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
       - name: Putting the built files into a ZIP file
         run: |
           rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
