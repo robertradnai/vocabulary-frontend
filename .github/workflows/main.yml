@@ -44,8 +44,8 @@ jobs:
       - name: Putting the built files into a ZIP file
         run: |
           cd dist
-          echo "Timestamp: $(date)" >> build-trace.txt
-          echo "Branch: ${{ steps.current_datetime.outputs.content }}"
+          echo "Timestamp: $(date)" > vocabulary-front-end/build-trace.txt
+          echo "Branch: ${{ steps.current_datetime.outputs.content }}" >> vocabulary-front-end/build-trace.txt
           zip -r ../dist.zip vocabulary-front-end
       - name: Writing current date and time into an environment variable
         shell: bash
