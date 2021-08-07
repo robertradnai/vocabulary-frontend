@@ -2,8 +2,15 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { AuthConfig } from 'angular-oauth2-oidc';
+
 export const environment = {
-  production: false
+  production: false,
+
+  oauthIssuer: "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_1Nc1U9zKv",
+  oauthRedirectUri: window.location.origin,
+  oauthClientId: '3lmlqb5mlp21etl4n20lj37j39',
+  oauthShowDebugInformation: true
 };
 
 /*

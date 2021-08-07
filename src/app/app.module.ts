@@ -12,6 +12,7 @@ import { QuizComponent } from './quiz/quiz.component';
 import { WordListChoiceComponent } from './word-list-choice/word-list-choice.component';
 import { FeedbackComponent } from './feedback/feedback.component';
 import { AboutComponent } from './about/about.component';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 
 @NgModule({
@@ -28,7 +29,13 @@ import { AboutComponent } from './about/about.component';
     AppRoutingModule,
     FormsModule, ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    OAuthModule.forRoot({
+      resourceServer: {
+        allowedUrls: ['/api'],
+        sendAccessToken: true
+      }
+    })
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

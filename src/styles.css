@@ -16,6 +16,7 @@
 body {
     font-family: 'Verdana', sans-serif;
     color: var(--primary-font-color);
+    margin-top: -15px;
 }
 
 p {
@@ -38,7 +39,7 @@ ul.quiz-directives li {
     min-width: 300px;
     max-width: 700px;
     width: 90%;
-    margin: 0 auto;
+    margin: -15px auto 0 auto;
     padding: 10px;
     overflow: none;
     /*background-color: aquamarine;*/
@@ -58,6 +59,13 @@ ul.quiz-directives li {
     align-items: center;
     text-transform: uppercase;
 
+}
+
+.login-row {
+  background-color: white;
+  text-align: right;
+  text-transform: none;
+  padding: 0 0;
 }
 
 .app-header ul {

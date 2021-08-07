@@ -1,5 +1,17 @@
 <div class="content">
+
   <header class="app-header">
+    
+    <div class="login-row"> 
+      <p *ngIf="userName == null" ><button (click)="login()" class="btn btn-default">Login</button></p>
+      <p *ngIf="userName">
+       
+        Hello, {{userName}}! 
+        <button (click)="logout()" class="btn btn-default">Logout</button>
+      </p>
+    </div>
+    
+    
     <div class="container">
       <p class="logo-text">{{title}}</p>
       <ul>
@@ -18,7 +30,10 @@
   <div class="main-content container">
     <router-outlet></router-outlet>
   </div>
+
   
+
+
   <!--
   <p>Subscribe if you're interested in hearing updates about this demo application:</p>
   <input placeholder="your email address"> <button>Subscribe</button>
