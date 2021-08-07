@@ -28,6 +28,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: update build version in the source code
+        run: |
+          echo export const version = { number: \"snapshot-${GITHUB_REF#refs/heads/}-$(date --iso-8601=seconds)\" } > src/version.ts
+      - name: npm install and npm run build
+        run: |
+          npm install
+          npm run-script ng build -- --${{ github.head_ref }} --base-href /vocabulary/ --deploy-url /vocabulary/     
       - name: Extract branch name
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         shell: bash
