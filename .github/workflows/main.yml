@@ -54,7 +54,7 @@ jobs:
         run: |
           cd dist
           echo "Timestamp: ${{ steps.current_datetime.outputs.content }}" > vocabulary-front-end/build-trace.txt
-          echo "Branch: ${{ steps.current_datetime.outputs.content }}" >> vocabulary-front-end/build-trace.txt
+          echo "Branch: ${{ steps.extract_branch.outputs.branch }}" >> vocabulary-front-end/build-trace.txt
           zip -r ../dist.zip vocabulary-front-end
   
       - name: Push Build to Releases
