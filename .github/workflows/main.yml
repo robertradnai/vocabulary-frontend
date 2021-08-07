@@ -34,7 +34,7 @@ jobs:
       - name: npm install and npm run build
         run: |
           npm install
-          npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/     
+          npm run-script ng build -- --${{ github.head_ref }} --base-href /vocabulary/ --deploy-url /vocabulary/     
       - name: Extract branch name
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         shell: bash
