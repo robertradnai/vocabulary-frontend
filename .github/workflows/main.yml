@@ -28,6 +28,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: cleanup
+        run: |
+          rm -rf dist
+          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
       - name: npm install and npm run build
         run: |
           npm install
@@ -39,8 +43,9 @@ jobs:
         id: extract_branch
       - name: Putting the built files into a ZIP file
         run: |
-          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
           cd dist
+          echo "Timestamp: $(date)" >> build-trace.txt
+          echo "Branch: ${{ steps.current_datetime.outputs.content }}"
           zip -r ../dist.zip vocabulary-front-end
       - name: Writing current date and time into an environment variable
         shell: bash
