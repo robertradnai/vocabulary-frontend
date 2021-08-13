@@ -3,14 +3,13 @@
   <header class="app-header">
     
     <div class="login-row"> 
-      <p *ngIf="userName == null" ><button (click)="login()" class="btn btn-default">Login</button></p>
-      <p *ngIf="userName">
+      <p *ngIf="!user" ><button (click)="authService.login()" class="btn btn-default">Login</button></p>
+      <p *ngIf="user">
        
-        Hello, {{userName}}! 
-        <button (click)="logout()" class="btn btn-default">Logout</button>
+        Hello, {{user.username}}! 
+        <button (click)="authService.logout()" class="btn btn-default">Logout</button>
       </p>
     </div>
-    
     
     <div class="container">
       <p class="logo-text">{{title}}</p>
