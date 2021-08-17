@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 
 import {HttpClient} from '@angular/common/http';
-import {Observable, throwError } from 'rxjs'
+import {BehaviorSubject, Observable, Subject, throwError } from 'rxjs'
 import { tap, shareReplay } from 'rxjs/operators';
 import * as moment from "moment";
 import { environment } from 'src/environments/environment';
@@ -16,52 +16,36 @@ export interface User {
 })
 export class AuthService {
 
-  constructor(private http: HttpClient, private oauthService: OAuthService) { }
+  constructor(private oauthService: OAuthService) {
+    this.user$ = new BehaviorSubject(null);
+  }
 
+  public user$: BehaviorSubject<User>;
 
   public init() {
     this.oauthService.configure(this.authCodeFlowConfig);
-  }
-
-  public getUserPromise(): Promise<User> {
-    console.log("getUserPromise() called")
-    let oauthService = this.oauthService;
-    let p: Promise<User> = new Promise(
-      resolve => {
-        console.log("Promise in getUserPromise() is called");
-        oauthService.loadDiscoveryDocumentAndTryLogin().then(
-          function(success: boolean) {
-            var claims = oauthService.getIdentityClaims();
-            if (!claims) return null
-            else {
-              const user: User = {username: claims["cognito:username"]};
-              resolve(user);
-            } 
-          }
-        );
-        
+    console.log("init - starting login")
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then((isLoginSuccessful) => {
+      var claims = this.oauthService.getIdentityClaims();
+      console.log("init - login finished with claims "+JSON.stringify(claims))
+      if (!claims) {
+        console.warn("Logging in was not successful!")
       }
-    )
-    return p;
+      else {
+        const user: User = {username: claims["cognito:username"]};
+        this.user$.next(user);
+      } 
+    });
   }
 
   public login() {
     this.oauthService.initLoginFlow();
-    window.location.reload();
+    //window.location.reload();
   }
 
   public logout() {
     this.oauthService.logOut();
     window.location.reload();
-  }
-
-
-  public get user(): User {
-    var claims = this.oauthService.getIdentityClaims();
-    if (!claims) return null;
-
-    const user: User = {username: claims["cognito:username"]}
-    return user;
   }
 
   authCodeFlowConfig: AuthConfig = {

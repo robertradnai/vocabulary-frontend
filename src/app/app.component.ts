@@ -21,10 +21,10 @@ export class AppComponent implements OnInit {
   user: User;
 
   ngOnInit() {
-    this.authService.getUserPromise().then(
-      (user: User) => {this.user = user}
-    )
-    //this.user = this.authService.user;
+    this.authService.user$.subscribe((user: User) => {
+      this.user = user;
+      console.log("User received through observable: "+JSON.stringify(user));
+    });
   }
 
   title = 'Vocabulary quiz demo';
