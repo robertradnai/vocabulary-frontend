@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SharedListsResponse, UserListsResponse } from '../models';
 import { QuizService } from '../quiz-service.service';
-import { AuthService } from '../auth.service';
+import { AuthService, User } from '../auth.service';
 
 @Component({
   selector: 'app-word-list-choice',
@@ -11,23 +11,30 @@ import { AuthService } from '../auth.service';
 })
 export class WordListChoiceComponent implements OnInit {
 
-  constructor(private quizService: QuizService, private router: Router) { }
+  constructor(private quizService: QuizService, private router: Router, private authService: AuthService) { }
 
   available_word_lists: SharedListsResponse[]
   user_word_lists: UserListsResponse[]
+  user: User;
 
   ngOnInit(): void {
-    this.quizService.getAvailableWordLists().subscribe(content => {
-      this.available_word_lists = content;
-    })
-    
-    if (!(this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null")) {
-      this.quizService.getUserWordLists().subscribe(content => {
-        this.user_word_lists = content;
+
+
+    this.authService.user$.subscribe((user: User) => {
+      this.quizService.getAvailableWordLists().subscribe(content => {
+        this.available_word_lists = content;
       })
-    }else {
-      this.user_word_lists = []
-    }
+      
+      if (!(this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null")) {
+        this.quizService.getUserWordLists().subscribe(content => {
+          this.user_word_lists = content;
+        })
+      }else {
+        this.user_word_lists = []
+      }
+
+      this.user = user;
+    });
 
   }
 

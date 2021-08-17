@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http'
 
 
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login.component';
 import { AppRoutingModule } from './app-routing.module';
 import { httpInterceptorProviders } from './http-interceptors';
 import { QuizComponent } from './quiz/quiz.component';
@@ -18,7 +17,6 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
     QuizComponent,
     WordListChoiceComponent,
     FeedbackComponent,
