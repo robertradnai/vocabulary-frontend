@@ -21,7 +21,28 @@ export class AuthService {
 
   public init() {
     this.oauthService.configure(this.authCodeFlowConfig);
-    this.oauthService.loadDiscoveryDocumentAndTryLogin();
+  }
+
+  public getUserPromise(): Promise<User> {
+    console.log("getUserPromise() called")
+    let oauthService = this.oauthService;
+    let p: Promise<User> = new Promise(
+      resolve => {
+        console.log("Promise in getUserPromise() is called");
+        oauthService.loadDiscoveryDocumentAndTryLogin().then(
+          function(success: boolean) {
+            var claims = oauthService.getIdentityClaims();
+            if (!claims) return null
+            else {
+              const user: User = {username: claims["cognito:username"]};
+              resolve(user);
+            } 
+          }
+        );
+        
+      }
+    )
+    return p;
   }
 
   public login() {

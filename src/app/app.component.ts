@@ -21,7 +21,10 @@ export class AppComponent implements OnInit {
   user: User;
 
   ngOnInit() {
-    this.user = this.authService.user;
+    this.authService.getUserPromise().then(
+      (user: User) => {this.user = user}
+    )
+    //this.user = this.authService.user;
   }
 
   title = 'Vocabulary quiz demo';
