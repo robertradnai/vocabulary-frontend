@@ -25,13 +25,9 @@ export class WordListChoiceComponent implements OnInit {
         this.available_word_lists = content;
       })
       
-      if (!(this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null")) {
-        this.quizService.getUserWordLists().subscribe(content => {
-          this.user_word_lists = content;
-        })
-      }else {
-        this.user_word_lists = []
-      }
+      this.quizService.getUserWordLists().subscribe(content => {
+        this.user_word_lists = content;
+      })
 
       this.user = user;
     });
