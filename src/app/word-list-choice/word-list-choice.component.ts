@@ -43,7 +43,7 @@ export class WordListChoiceComponent implements OnInit {
     // Store the chosen list
     //this.quizService.setChosenWordList(word_list);
 
-    await this.ensureRegistration()
+    // await this.ensureRegistration()
     
     await this.quizService.postCloneWordList(word_list.availableWordListId)
       .toPromise()
