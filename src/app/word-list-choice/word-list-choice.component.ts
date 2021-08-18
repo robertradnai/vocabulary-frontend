@@ -21,13 +21,16 @@ export class WordListChoiceComponent implements OnInit {
 
 
     this.authService.user$.subscribe((user: User) => {
-      this.quizService.getAvailableWordLists().subscribe(content => {
-        this.available_word_lists = content;
-      })
       
-      this.quizService.getUserWordLists().subscribe(content => {
-        this.user_word_lists = content;
-      })
+      if (user) {
+        this.quizService.getAvailableWordLists().subscribe(content => {
+          this.available_word_lists = content;
+        })
+        
+        this.quizService.getUserWordLists().subscribe(content => {
+          this.user_word_lists = content;
+        })
+      }
 
       this.user = user;
     });
