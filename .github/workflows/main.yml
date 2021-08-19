@@ -24,33 +24,39 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+      
       - name: Node ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: cleanup
+      
+      - name: update build version in the source code
         run: |
-          rm -rf dist
-          rm -f dist.zip  # With -r, the command won't fail if the file doesn't exist 
-      - name: npm install and npm run build
-        run: |
-          npm install
-          npm run-script ng build -- --prod --base-href /vocabulary/ --deploy-url /vocabulary/     
+          echo export const version = { number: \"snapshot-${GITHUB_REF#refs/heads/}-$(date --iso-8601=seconds)\" } > src/version.ts
+      
       - name: Extract branch name
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-      - name: Putting the built files into a ZIP file
+      
+      - name: npm install and npm run build
         run: |
-          cd dist
-          echo "Timestamp: $(date)" > vocabulary-front-end/build-trace.txt
-          echo "Branch: ${{ steps.current_datetime.outputs.content }}" >> vocabulary-front-end/build-trace.txt
-          zip -r ../dist.zip vocabulary-front-end
+          npm install
+          npm run-script ng build -- --configuration=${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
+      
       - name: Writing current date and time into an environment variable
         shell: bash
         run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
         id: current_datetime
+      
+      - name: Putting the built files into a ZIP file
+        run: |
+          cd dist
+          echo "Timestamp: ${{ steps.current_datetime.outputs.content }}" > vocabulary-front-end/build-trace.txt
+          echo "Branch: ${{ steps.extract_branch.outputs.branch }}" >> vocabulary-front-end/build-trace.txt
+          zip -r ../dist.zip vocabulary-front-end
+  
       - name: Push Build to Releases
         uses: ncipollo/release-action@v1
         # https://github.com/ncipollo/release-action

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { PickQuestionsResponse, MultipleChoiceQuiz, QuizDialogState, WordListAsChoice, QuizEntry } from '../models';
+import { PickQuestionsResponse, MultipleChoiceQuiz, QuizDialogState, SharedListsResponse, QuizEntry } from '../models';
 import { QuizService } from '../quiz-service.service'
 
 const quizStrategy: string = "dummy";
@@ -15,7 +15,7 @@ export class QuizComponent implements OnInit {
   
   // State-related (non-UI)
   //quizBatch: ChoiceQuiz[] = [];
-  chosenWordList: WordListAsChoice;
+  chosenWordList: SharedListsResponse;
   quizCounter: number = -1;
   questionIsAnswered: boolean = false;
   answers: Map<number, boolean>;
@@ -59,29 +59,11 @@ export class QuizComponent implements OnInit {
     }else {
       // A word list has been chosen
       this.nextButtonLabel = "Loading..."
-
-      // Registering the guest user if needed
-      console.debug("Stored guest jwt type in pickQuestion: "+(typeof localStorage.getItem("guestJwt")));
-      console.debug("Stored guest jwt value in pickQuestion: "+(localStorage.getItem("guestJwt")));
-      if (this.quizService.getStoredGuestJwt() === null || this.quizService.getStoredGuestJwt() == "null") {
-        console.debug("No guest JWT is found, registering guest user...")   
-        console.debug("Guest JWT before registering: "+localStorage.getItem("guestJwt"))
-        const res = await this.quizService.postRegisterGuest().toPromise()
-        localStorage.setItem("guestJwt", (res as any).guestJwt);
-        console.debug("Guest JWT was received and stored: "+localStorage.getItem("guestJwt"))
-        await this.quizService.postCloneWordList().toPromise();
-        console.debug("Guest user was registered.") 
-      } else {
-        console.debug("The user is registered, fetching new question...")
-      }
-
       // Fetch a batch of questions
       this.quizService.getPickedQuestion(
-        this.chosenWordList.wordCollection, 
-        this.chosenWordList.wordList, 
+        this.chosenWordList.userWordListId, 
         quizStrategy
       ).toPromise().then(resPickedQuestions => {
-        console.debug("Got choice quiz: "+ JSON.stringify(resPickedQuestions));
         this.pickedQuestionsResponse = resPickedQuestions
         //this.quizBatch = resPickedQuestions.quizList;
         this.answers = new Map()
@@ -101,12 +83,9 @@ export class QuizComponent implements OnInit {
       answersJson[key] = value  
     });
 
-    console.log("Sending answers: "+JSON.stringify(answersJson));
-
-    await this.quizService.postAnswerQuestion(this.chosenWordList.wordCollection, this.chosenWordList.wordList, answersJson)
+    await this.quizService.postAnswerQuestion(this.chosenWordList.userWordListId, answersJson)
       .toPromise().then(
       content => {
-        console.log("Got content from answer-question: "+JSON.stringify(content))
         this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ " %";
       }
     );
@@ -119,10 +98,11 @@ export class QuizComponent implements OnInit {
     }else {
       this.questionIsAnswered = true;
       console.log(option+" was chosen");
-      console.log("this.choiceQuiz.flashcard.lang2 "+ this.getCurrentQuizPackage().flashcard.lang2);
 
       // Evaluating answer
-      this.isAnswerCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+      let option_index = this.getCurrentQuizPackage().question.options.indexOf(option)
+      this.isAnswerCorrect = this.getCurrentQuizPackage().question.correctAnswerIndices.indexOf(option_index) != -1;
+
       this.pickedAnswer = option;
       this.answers.set(this.getCurrentQuizPackage().question.rowKey, this.isAnswerCorrect);
 
@@ -136,8 +116,10 @@ export class QuizComponent implements OnInit {
   }
 
   isAnsweredAndCorrect(option: string): boolean {
-    
-    let isOptionCorrect = option == this.getCurrentQuizPackage().flashcard.lang1;
+
+    let option_index = this.getCurrentQuizPackage().question.options.indexOf(option)
+    let isOptionCorrect = this.getCurrentQuizPackage().question.correctAnswerIndices.indexOf(option_index) != -1;
+
     console.log("isAnsweredAndCorrect called with input "+option+
             ", returning "+(this.questionIsAnswered && isOptionCorrect));
     return this.questionIsAnswered && isOptionCorrect;
@@ -145,12 +127,7 @@ export class QuizComponent implements OnInit {
 
   isAnsweredAndWrong(option: string): boolean {
     let isOptionPicked = option == this.pickedAnswer;
-    let isPickedCorrect = this.pickedAnswer == this.getCurrentQuizPackage().flashcard.lang1;
-    let retVal = (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
-    console.log("isAnsweredAndWrong called, option: "+option+", correct answer: "+this.getCurrentQuizPackage().flashcard.lang1
-            +", picked answer: "+this.pickedAnswer+", isPickedCorrect: "+isPickedCorrect+", returning "+
-            retVal);
-    return (this.questionIsAnswered && isOptionPicked && !isPickedCorrect);
+    return (this.questionIsAnswered && isOptionPicked && !this.isAnswerCorrect);
   }
 
   async onNextButtonClick() {
@@ -209,7 +186,6 @@ export class QuizComponent implements OnInit {
   }
 
   goBack() {
-    this.quizService.setStoredGuestJwt(null);
     this.router.navigate(['/word-lists']);
   }
 
