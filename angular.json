@@ -29,7 +29,7 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
+            "main": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
