@@ -4,6 +4,8 @@
     you'll be able to save your progress and edit your own word lists.
 </p>
 
+<p>Made with love by <a href="https://www.linkedin.com/in/robert-radnai/">Robert Radnai</a>, a data scientist specialized in leveraging industrial IoT data.</p>
+
 <div *ngIf="user">  
     <b>My word lists:</b>
     <ul class="quiz-options" >
@@ -19,9 +21,9 @@
         <li *ngFor="let word_list of available_word_lists" (click)="chooseAvailableList(word_list)">{{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
     </ul>
         
-    <p>You can <a href="/contact">subscribe</a> to occasional emails about the state of development 
-        or you can contact the developer <a href="/contact">here</a>.</p>
-    <p>Made with love by <a href="https://www.linkedin.com/in/robert-radnai/">Robert Radnai</a>, an aspiring backend developer and data scientist.</p>
+    <!--<p>You can <a href="/contact">subscribe</a> to occasional emails about the state of development 
+        or you can contact the developer <a href="/contact">here</a>.</p> -->
+    
 </div>
 <div *ngIf="!user">  
 <p>Log in to see the word lists. Currently, you need an invitation to test the demo app.</p>
