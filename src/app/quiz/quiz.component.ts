@@ -186,7 +186,7 @@ export class QuizComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/word-lists']);
+    this.router.navigate(['']);
   }
 
   getCurrentQuizPackage(): QuizEntry {
