@@ -8,10 +8,10 @@ import { AuthGuard } from './auth.guard.service';
 
 
 const routes: Routes = [
-  { path: 'word-lists', component: WordListChoiceComponent, canActivate: [AuthGuard]},
+  // { path: 'word-lists', component: WordListChoiceComponent, canActivate: [AuthGuard]},
   { path: '', component: WordListChoiceComponent},
   { path: 'quiz', component: QuizComponent, canActivate: [AuthGuard]},
-  { path: 'contact', component: FeedbackComponent},
+  // { path: 'contact', component: FeedbackComponent},
   //{ path: 'about', component: AboutComponent}
   //{ path: 'word-lists', component: WordListChoiceComponent}
 ]; // sets up routes constant where you define your routes
