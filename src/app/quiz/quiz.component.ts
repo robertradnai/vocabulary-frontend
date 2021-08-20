@@ -86,7 +86,7 @@ export class QuizComponent implements OnInit {
     await this.quizService.postAnswerQuestion(this.chosenWordList.userWordListId, answersJson)
       .toPromise().then(
       content => {
-        this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ " %";
+        this.learningProgress = ((content as any).learningProgress*100).toFixed(1)+ "%";
       }
     );
   }
@@ -178,8 +178,7 @@ export class QuizComponent implements OnInit {
   getBatchProgressLabel() {
     if(this.quizDialogState == QuizDialogState.Flashcard || this.quizDialogState == QuizDialogState.Question) {
       return "" 
-        + (this.quizCounter+1)+"/"+this.pickedQuestionsResponse.quizList.length 
-        + " | "+this.learningProgress+" overall";
+        + (this.quizCounter+1)+"/"+this.pickedQuestionsResponse.quizList.length;
     }else {
       return "";
     }

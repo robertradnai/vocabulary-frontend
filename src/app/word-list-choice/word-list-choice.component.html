@@ -9,7 +9,7 @@
 <div *ngIf="user">  
     <b>My word lists:</b>
     <ul class="quiz-options" >
-        <li *ngFor="let word_list of user_word_lists" (click)="chooseUserList(word_list)">[{{word_list.progress*100}}%] {{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
+        <li *ngFor="let word_list of user_word_lists" (click)="chooseUserList(word_list)">[{{ (word_list.progress*100).toFixed(1) }}%] {{word_list.lang1}} (for {{word_list.lang2}} speakers) / {{word_list.wordListDisplayName}}</li>
     </ul>
     
     <b>Available word lists:</b>
