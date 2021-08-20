@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router'; // CLI imports router
-import { AboutComponent } from './about/about.component';
-import { FeedbackComponent } from './feedback/feedback.component';
+// import { AboutComponent } from './about/about.component';
+// import { FeedbackComponent } from './feedback/feedback.component';
 import { QuizComponent } from './quiz/quiz.component';
 import { WordListChoiceComponent } from './word-list-choice/word-list-choice.component';
 import { AuthGuard } from './auth.guard.service';
