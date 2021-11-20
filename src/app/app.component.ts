@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { version } from "../version";
 import { AuthService, User } from './auth.service';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-root',
@@ -14,6 +16,8 @@ export class AppComponent implements OnInit {
 
 
     console.log("Vocabulary front end version: " + version.number);
+    console.log('Build type: ' + environment.build_type)
+    console.log('Build date: '+ version.build_date)
     authService.init();
     
   }
