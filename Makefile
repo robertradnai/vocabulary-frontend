@@ -1,7 +1,9 @@
+CONFIGURATION=""
 
 .PHONY: build
 build:
-	docker build -t vocabulary_front_end .
+	echo Configuration: ${CONFIGURATION}
+	docker build -t vocabulary_front_end --build-arg CONFIGURATION=${CONFIGURATION} .
 
 .PHONY: run_container
 run_container:
