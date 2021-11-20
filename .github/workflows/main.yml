@@ -17,53 +17,21 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Cache node modules
-        uses: actions/cache@v1
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-      
-      - name: Node ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      
-      - name: update build version in the source code
-        run: |
-          echo export const version = { number: \"snapshot-${GITHUB_REF#refs/heads/}-$(date --iso-8601=seconds)\" } > src/version.ts
-      
       - name: Extract branch name
         # https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       
-      - name: npm install and npm run build
+      - name: build Docker image
         run: |
-          npm install
-          npm run-script ng build -- --configuration=${{ steps.extract_branch.outputs.branch }} --base-href /vocabulary/ --deploy-url /vocabulary/     
-      
-      - name: Writing current date and time into an environment variable
-        shell: bash
-        run: echo "##[set-output name=content;]$(echo $(date +'%Y-%m-%d %H:%M:%S'))"
-        id: current_datetime
-      
-      - name: Putting the built files into a ZIP file
+          case ${{ steps.extract_branch.outputs.branch }} in
+            develop) CONFIGURATION=development ;;
+            main) CONFIGURATION=production ;;
+          esac
+          make build CONFIGURATION=${CONFIGURATION}
+
+      - name: publish Docker image
         run: |
-          cd dist
-          echo "Timestamp: ${{ steps.current_datetime.outputs.content }}" > vocabulary-front-end/build-trace.txt
-          echo "Branch: ${{ steps.extract_branch.outputs.branch }}" >> vocabulary-front-end/build-trace.txt
-          zip -r ../dist.zip vocabulary-front-end
-  
-      - name: Push Build to Releases
-        uses: ncipollo/release-action@v1
-        # https://github.com/ncipollo/release-action
-        with:
-          artifacts: "dist.zip"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.extract_branch.outputs.branch }}
-          body: "Release was updated at ${{ steps.current_datetime.outputs.content }}"
-          allowUpdates: true
-          replacesArtifacts: true
+          echo $DOCKERHUB_PASSWORD | sudo docker login --username robertradnai --password-stdin 
+          make publish
