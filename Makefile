@@ -24,3 +24,4 @@ publish:
 .PHONY: live_test
 live_test: update_version
 	ng serve --open
+
