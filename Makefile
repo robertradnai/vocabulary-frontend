@@ -18,8 +18,8 @@ run_container:
 
 .PHONY: publish
 publish:
-	docker tag vocabulary_front_end robertradnai/vocabulary_front_end:${FRONT_END_VERSION}
-	docker push robertradnai/vocabulary_front_end:${FRONT_END_VERSION}
+	sudo docker tag vocabulary_front_end robertradnai/vocabulary_front_end:${FRONT_END_VERSION}
+	sudo docker push robertradnai/vocabulary_front_end:${FRONT_END_VERSION}
 
 .PHONY: live_test
 live_test: update_version
