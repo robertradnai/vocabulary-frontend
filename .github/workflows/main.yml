@@ -32,8 +32,8 @@ jobs:
           make build CONFIGURATION=${CONFIGURATION}
 
       - name: publish Docker image
-        env: # Or as an environment variable
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo $DOCKERHUB_PASSWORD | sudo docker login --username robertradnai --password-stdin 
+          echo $DOCKERHUB_TOKEN | sudo docker login --username robertradnai --password-stdin 
           make publish
