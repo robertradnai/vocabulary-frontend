@@ -19,4 +19,5 @@ COPY --from=node /usr/src/app/dist/vocabulary-front-end /usr/share/nginx/html
 
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Copying a default, self-signed certificate
+COPY ./httpscertificate /httpscertificate

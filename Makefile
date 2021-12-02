@@ -12,9 +12,9 @@ build: update_version
 	docker build -t vocabulary_front_end --build-arg CONFIGURATION=${CONFIGURATION} .
 
 .PHONY: run_container
-run_container:
+run_container: build
 	docker network create -d bridge vocabulary || :
-	docker run --rm --network="vocabulary" -it -p 4200:80 vocabulary_front_end
+	docker run --rm --network="vocabulary" -it -p 4200:80 -p 4201:443 vocabulary_front_end
 
 .PHONY: publish
 publish:
@@ -24,4 +24,3 @@ publish:
 .PHONY: live_test
 live_test: update_version
 	ng serve --open
-
